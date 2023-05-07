@@ -6,8 +6,6 @@ public class Group implements Serializable {
     private Integer id;
     private String name;
 
-    // Getters and Setters
-
     public Integer getId() {
         return id;
     }

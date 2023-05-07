@@ -6,7 +6,7 @@
     <resultMap id="leaveRequestResultMap" type="com.wuan.attendance.model.LeaveRequest">
         <id column="id" property="id"/>
         <result column="user_id" property="userId"/>
-        <result column="reason" property="reason" />
+        <result column="reason" property="reason"/>
         <result column="week_number" property="weekNumber"/>
         <result column="status" property="status" javaType="com.wuan.attendance.model.LeaveStatus"/>
         <result column="created_at" property="createdAt"/>
@@ -28,21 +28,21 @@
     <insert id="insert" parameterType="com.wuan.attendance.model.LeaveRequest" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO leave_request (user_id, reason, week_number, status, created_at, updated_at)
         VALUES (#{userId},
-                #{reason},
-                #{weekNumber},
-                #{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
-                NOW(),
-                NOW()
+        #{reason},
+        #{weekNumber},
+        #{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+        NOW(),
+        NOW()
         );
     </insert>
 
     <update id="update" parameterType="com.wuan.attendance.model.LeaveRequest">
         UPDATE leave_request
         SET user_id = #{userId},
-            reason = #{reason},
-            week_number = #{weekNumber},
-            status = #{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
-            updated_at = NOW()
+        reason = #{reason},
+        week_number = #{weekNumber},
+        status = #{status, typeHandler=org.apache.ibatis.type.EnumTypeHandler},
+        updated_at = NOW()
         WHERE id = #{id};
     </update>
 

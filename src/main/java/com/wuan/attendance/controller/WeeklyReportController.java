@@ -2,7 +2,6 @@ package com.wuan.attendance.controller;
 
 import com.wuan.attendance.dto.WeeklyReportDTO;
 import com.wuan.attendance.service.WeeklyReportService;
-import com.wuan.attendance.service.impl.WeeklyReportServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

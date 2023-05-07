@@ -17,7 +17,7 @@ public class LeaveRequestController {
     private LeaveRequestService leaveRequestService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<LeaveRequestDTO> getLeaveRequestById (@PathVariable Integer id) {
+    public ResponseEntity<LeaveRequestDTO> getLeaveRequestById(@PathVariable Integer id) {
         LeaveRequestDTO leaveRequest = leaveRequestService.findById(id);
         return ResponseEntity.ok(leaveRequest);
     }

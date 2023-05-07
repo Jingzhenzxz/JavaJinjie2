@@ -8,9 +8,12 @@ import java.util.List;
 @Mapper
 public interface GroupMapper {
     List<Group> findAll();
+
     Group findById(Integer id);
+
     int insert(Group group);
+
     int update(Group group);
+
     int delete(Integer id);
-    // Other custom methods if needed
 }

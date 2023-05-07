@@ -32,17 +32,17 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
-    public boolean insert (GroupDTO groupDTO) {
+    public boolean insert(GroupDTO groupDTO) {
         return groupMapper.insert(convertToModel(groupDTO)) > 0;
     }
 
     @Override
-    public boolean update (GroupDTO groupDTO) {
+    public boolean update(GroupDTO groupDTO) {
         return groupMapper.update(convertToModel(groupDTO)) > 0;
     }
 
     @Override
-    public boolean delete (Integer id) {
+    public boolean delete(Integer id) {
         return groupMapper.delete(id) > 0;
     }
 

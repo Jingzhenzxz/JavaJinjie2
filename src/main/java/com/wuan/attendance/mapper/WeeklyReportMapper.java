@@ -8,10 +8,14 @@ import java.util.List;
 @Mapper
 public interface WeeklyReportMapper {
     List<WeeklyReport> findAll();
+
     WeeklyReport findById(Integer id);
+
     List<WeeklyReport> findByUserId(Integer userId);
+
     int insert(WeeklyReport weeklyReport);
+
     int update(WeeklyReport weeklyReport);
+
     int delete(Integer id);
-    // Other custom methods if needed
 }

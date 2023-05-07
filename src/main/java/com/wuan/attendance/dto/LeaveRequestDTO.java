@@ -37,6 +37,7 @@ public class LeaveRequestDTO implements Serializable {
     public void setReason(String reason) {
         this.reason = reason;
     }
+
     public Integer getWeekNumber() {
         return weekNumber;
     }

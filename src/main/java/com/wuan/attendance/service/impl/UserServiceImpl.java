@@ -48,6 +48,7 @@ public class UserServiceImpl implements UserService {
         }
         return convertToDTO(user);
     }
+
     @Override
     public boolean insert(UserDTO userDTO) {
         return userMapper.insert(convertToModel(userDTO)) > 0;

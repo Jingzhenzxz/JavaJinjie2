@@ -7,11 +7,18 @@ import java.util.List;
 
 public interface UserService {
     List<UserDTO> findAll();
+
     UserDTO findById(Integer id);
+
     UserDTO findByEmail(String email);
+
     UserDTO findByUsername(String username);
+
     boolean insert(UserDTO userDTO);
+
     boolean update(UserDTO userDTO);
+
     boolean delete(Integer id);
+
     boolean changePassword(User user, String newPassword);
 }
