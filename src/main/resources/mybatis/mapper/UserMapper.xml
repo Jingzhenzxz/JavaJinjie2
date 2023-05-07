@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wuan.attendance.mapper.UserMapper">
+
+    <resultMap id="userResultMap" type="com.wuan.attendance.model.User">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="email" property="email"/>
+        <result column="qq" property="qq"/>
+        <result column="password" property="password"/>
+        <result column="group_id" property="groupId"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="userResultMap">
+        SELECT * FROM user;
+    </select>
+
+    <select id="findById" resultMap="userResultMap" parameterType="int">
+        SELECT * FROM user WHERE id = #{id};
+    </select>
+
+    <select id="findByEmail" resultMap="userResultMap" parameterType="string">
+        SELECT * FROM user WHERE email = #{email};
+    </select>
+
+    <insert id="insert" parameterType="com.wuan.attendance.model.User">
+        INSERT INTO user (username, email, qq, password, group_id, created_at, updated_at)
+        VALUES (#{username}, #{email}, #{qq}, #{password}, #{groupId}, #{createdAt}, #{updatedAt});
+    </insert>
+
+    <update id="update" parameterType="com.wuan.attendance.model.User">
+        UPDATE user
+        SET
+        username = #{username},
+        email = #{email},
+        qq = #{qq},
+        password = #{password},
+        group_id = #{group_id},
+        created_at = #{createdAt},
+        updated_at = #{updatedAt},
+        WHERE id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM user WHERE id = #{id};
+    </delete>
+</mapper>

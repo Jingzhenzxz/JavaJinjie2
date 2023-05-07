@@ -1,0 +1,82 @@
+package com.wuan.attendance.service.impl;
+
+import com.wuan.attendance.dto.UserDTO;
+import com.wuan.attendance.exception.UserNotFoundException;
+import com.wuan.attendance.mapper.UserMapper;
+import com.wuan.attendance.model.User;
+import com.wuan.attendance.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class UserServiceImpl implements UserService {
+
+    @Autowired
+    private UserMapper userMapper;
+
+    @Override
+    public List<UserDTO> findAll() {
+        return userMapper.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public UserDTO findById(Integer id) {
+        User user = userMapper.findById(id);
+        if (user == null) {
+            throw new UserNotFoundException("User not found with id: " + id);
+        }
+        return convertToDTO(user);
+    }
+
+    @Override
+    public UserDTO findByEmail(String email) {
+        User user = userMapper.findByEmail(email);
+        if (user == null) {
+            throw new UserNotFoundException("User not found with email: " + email);
+        }
+        return convertToDTO(user);
+    }
+
+    @Override
+    public boolean insert(User user) {
+        return userMapper.insert(user) > 0;
+    }
+
+    @Override
+    public boolean update(User user) {
+        return userMapper.update(user) > 0;
+    }
+
+    @Override
+    public boolean delete(Integer id) {
+        return userMapper.delete(id) > 0;
+    }
+
+    @Override
+    public boolean changePassword(User user, String newPassword) {
+        user.setPassword(newPassword);
+        int rowsAffected = userMapper.update(user);
+        return rowsAffected > 0;
+    }
+
+    private UserDTO convertToDTO(User user) {
+        // Convert the User object to UserDto object
+        if (user == null) {
+            return null;
+        }
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setUsername(user.getUsername());
+        userDTO.setEmail(user.getEmail());
+        userDTO.setQQ(user.getQQ());
+        userDTO.setPassword(user.getPassword());
+        userDTO.setGroupId(user.getGroupId());
+        userDTO.setCreatedAt(user.getCreatedAt());
+        userDTO.setUpdatedAt(user.getUpdatedAt());
+        return userDTO;
+    }
+
+}

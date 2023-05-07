@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.attendance.mapper.LeaveRequestMapper">
+
+    <resultMap id="leaveRequestResultMap" type="com.wuan.attendance.model.LeaveRequest">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="reason" property="reason" />
+        <result column="week_number" property="weekNumber"/>
+        <result column="status" property="status"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="leaveRequestResultMap">
+        SELECT * FROM leave_request;
+    </select>
+
+    <select id="findById" resultMap="leaveRequestResultMap" parameterType="int">
+        SELECT * FROM leave_request WHERE id = #{id};
+    </select>
+
+    <insert id="insert" parameterType="com.wuan.attendance.model.LeaveRequest">
+        INSERT INTO leave_request (user_id, reason, week_number, status)
+        VALUES (#{userId}, #{weekNumber}, #{status});
+    </insert>
+
+    <update id="update" parameterType="com.wuan.attendance.model.LeaveRequest">
+        UPDATE leave_request
+        SET user_id = #{userId}, week_number = #{weekNumber}, status = #{status}, updated_at = NOW()
+        WHERE id = #{id};
+    </update>
+
+    <delete id="delete" parameterType="int">
+        DELETE FROM leave_request WHERE id = #{id};
+    </delete>
+</mapper>
