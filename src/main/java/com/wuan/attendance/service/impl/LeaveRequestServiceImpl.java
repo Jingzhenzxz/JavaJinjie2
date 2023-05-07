@@ -27,6 +27,11 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
     }
 
     @Override
+    public List<LeaveRequestDTO> findByUserId(Integer userId) {
+        return leaveRequestMapper.findByUserId(userId).stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    @Override
     public boolean insert(LeaveRequestDTO leaveRequestDTO) {
         return leaveRequestMapper.insert(convertToModel(leaveRequestDTO)) > 0;
     }

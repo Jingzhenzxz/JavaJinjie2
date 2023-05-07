@@ -9,6 +9,7 @@ import java.util.List;
 public interface LeaveRequestMapper {
     List<LeaveRequest> findAll();
     LeaveRequest findById(Integer id);
+    List<LeaveRequest> findByUserId(Integer userId);
     int insert(LeaveRequest leaveRequest);
     int update(LeaveRequest leaveRequest);
     int delete(Integer id);

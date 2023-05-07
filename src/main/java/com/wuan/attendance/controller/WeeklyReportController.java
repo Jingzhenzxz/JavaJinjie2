@@ -17,14 +17,11 @@ import java.util.List;
 public class WeeklyReportController {
 
     @Autowired
-    private WeeklyReportServiceImpl weeklyReportServiceImpl;
+    private WeeklyReportService weeklyReportService;
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<WeeklyReportDTO>> getWeeklyReportsByUserId(@PathVariable Integer userId) {
-        List<WeeklyReportDTO> weeklyReports = weeklyReportServiceImpl.findByUserId(userId);
+        List<WeeklyReportDTO> weeklyReports = weeklyReportService.findByUserId(userId);
         return ResponseEntity.ok(weeklyReports);
     }
-
-    // Other endpoint methods implemented here
-
 }

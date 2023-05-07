@@ -1,15 +1,18 @@
 package com.wuan.attendance.dto;
 
+import com.wuan.attendance.model.LeaveStatus;
+
 import java.io.Serializable;
+import java.util.Date;
 
 public class LeaveRequestDTO implements Serializable {
     private Integer id;
     private Integer userId;
     private String reason;
     private Integer weekNumber;
-    private String status;
-
-    // Getters and Setters
+    private LeaveStatus status;
+    private Date createdAt;
+    private Date updatedAt;
 
     public Integer getId() {
         return id;
@@ -42,11 +45,27 @@ public class LeaveRequestDTO implements Serializable {
         this.weekNumber = weekNumber;
     }
 
-    public String getStatus() {
+    public LeaveStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(LeaveStatus status) {
         this.status = status;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

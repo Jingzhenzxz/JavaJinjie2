@@ -15,8 +15,6 @@ public class WeeklyReport implements Serializable {
     private String status;
     private Date createdAt;
 
-    // Getters and Setters
-
     public Integer getId() {
         return id;
     }

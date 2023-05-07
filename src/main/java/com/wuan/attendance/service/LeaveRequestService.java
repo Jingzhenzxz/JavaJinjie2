@@ -7,6 +7,8 @@ import java.util.List;
 public interface LeaveRequestService {
     List<LeaveRequestDTO> findAll();
     LeaveRequestDTO findById(Integer id);
+    List<LeaveRequestDTO> findByUserId(Integer userId);
+
     boolean insert (LeaveRequestDTO leaveRequestDTO);
     boolean update(LeaveRequestDTO leaveRequestDTO);
     boolean delete(Integer id);

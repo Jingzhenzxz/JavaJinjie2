@@ -1,7 +1,7 @@
 package com.wuan.attendance.controller;
 
 import com.wuan.attendance.dto.LeaveRequestDTO;
-import com.wuan.attendance.service.impl.LeaveRequestServiceImpl;
+import com.wuan.attendance.service.LeaveRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class LeaveRequestController {
 
     @Autowired
-    private LeaveRequestServiceImpl leaveRequestServiceImpl;
+    private LeaveRequestService leaveRequestService;
 
     @GetMapping("/{id}")
     public ResponseEntity<LeaveRequestDTO> getLeaveRequestById (@PathVariable Integer id) {
-        LeaveRequestDTO leaveRequest = leaveRequestServiceImpl.findById(id);
+        LeaveRequestDTO leaveRequest = leaveRequestService.findById(id);
         return ResponseEntity.ok(leaveRequest);
     }
 }

@@ -8,11 +8,9 @@ public class LeaveRequest implements Serializable {
     private Integer userId;
     private String reason;
     private Integer weekNumber;
-    private String status;
+    private LeaveStatus status;
     private Date createdAt;
     private Date updatedAt;
-
-    // Getters and Setters
 
     public Integer getId() {
         return id;
@@ -38,6 +36,7 @@ public class LeaveRequest implements Serializable {
         this.reason = reason;
     }
 
+
     public Integer getWeekNumber() {
         return weekNumber;
     }
@@ -46,11 +45,11 @@ public class LeaveRequest implements Serializable {
         this.weekNumber = weekNumber;
     }
 
-    public String getStatus() {
+    public LeaveStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(LeaveStatus status) {
         this.status = status;
     }
 

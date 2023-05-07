@@ -1,7 +1,7 @@
 package com.wuan.attendance.controller;
 
 import com.wuan.attendance.dto.GroupDTO;
-import com.wuan.attendance.service.impl.GroupServiceImpl;
+import com.wuan.attendance.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,14 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class GroupController {
 
     @Autowired
-    private GroupServiceImpl groupServiceImpl;
+    private GroupService groupService;
 
     @GetMapping("/{id}")
     public ResponseEntity<GroupDTO> getGroupById(@PathVariable Integer id) {
-        GroupDTO groupDTO = groupServiceImpl.findById(id);
+        GroupDTO groupDTO = groupService.findById(id);
         return ResponseEntity.ok(groupDTO);
     }
-
-    // Other endpoint methods implemented here
-
 }

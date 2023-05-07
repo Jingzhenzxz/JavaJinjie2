@@ -15,14 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     @Autowired
-    private UserServiceImpl userServiceImpl;
+    private UserService userService;
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getUserById(@PathVariable Integer id) {
-        UserDTO user = userServiceImpl.findById(id);
+        UserDTO user = userService.findById(id);
         return ResponseEntity.ok(user);
     }
-
-    // Other endpoint methods implemented here
-
 }
