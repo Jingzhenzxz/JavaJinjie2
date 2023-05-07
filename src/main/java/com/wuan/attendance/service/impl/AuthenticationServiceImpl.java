@@ -2,7 +2,8 @@ package com.wuan.attendance.service.impl;
 
 import com.wuan.attendance.dto.RegisterRequest;
 import com.wuan.attendance.dto.UserDTO;
-import com.wuan.attendance.mapper.AuthenticationMapper;
+import com.wuan.attendance.exception.UsernameAlreadyExistsException;
+import com.wuan.attendance.mapper.UserMapper;
 import com.wuan.attendance.model.User;
 import com.wuan.attendance.service.AuthenticationService;
 import com.wuan.attendance.service.UserService;
@@ -12,13 +13,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
-
     @Autowired
-    private AuthenticationMapper authenticationMapper;
+    private UserMapper userMapper;
 
     @Override
-    public UserDTO login(String username, String password) {
-        User user = authenticationMapper.findByUsername(username);
+    public UserDTO login(String email, String password) {
+        User user = userMapper.findByEmail(email);
         if (user != null && user.getPassword().equals(password)) {
             // Convert the User model to UserDTO
             UserDTO userDTO = new UserDTO();
@@ -32,9 +32,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private PasswordUtil passwordUtil;
-
     @Override
     public UserDTO register(RegisterRequest registerRequest) {
         // 检查用户名是否已经存在
@@ -45,7 +42,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         // 创建新用户
         UserDTO newUser = new UserDTO();
         newUser.setUsername(registerRequest.getUsername());
-        newUser.setPassword(passwordUtil.encode(registerRequest.getPassword()));
+        newUser.setPassword(PasswordUtil.encode(registerRequest.getPassword()));
         newUser.setRole("USER"); // 或其他默认角色
 
         // 将新用户插入数据库

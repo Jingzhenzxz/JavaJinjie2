@@ -12,8 +12,8 @@ public class UserDTO implements Serializable {
     private Integer groupId;
     private Date createdAt;
     private Date updatedAt;
+    private String role;
 
-    // Getters and Setters
 
     public Integer getId() {
         return id;
@@ -77,5 +77,13 @@ public class UserDTO implements Serializable {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getRole() {
+        return role;
     }
 }

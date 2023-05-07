@@ -41,13 +41,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean insert(User user) {
-        return userMapper.insert(user) > 0;
+    public UserDTO findByUsername(String username) {
+        User user = userMapper.findByUsername(username);
+        if (user == null) {
+            throw new UserNotFoundException("User not found with username: " + username);
+        }
+        return convertToDTO(user);
+    }
+    @Override
+    public boolean insert(UserDTO userDTO) {
+        return userMapper.insert(convertToModel(userDTO)) > 0;
     }
 
     @Override
-    public boolean update(User user) {
-        return userMapper.update(user) > 0;
+    public boolean update(UserDTO userDTO) {
+        return userMapper.update(convertToModel(userDTO)) > 0;
     }
 
     @Override
@@ -79,4 +87,20 @@ public class UserServiceImpl implements UserService {
         return userDTO;
     }
 
+    private User convertToModel(UserDTO userDTO) {
+        // Convert the UserDto object to User object
+        if (userDTO == null) {
+            return null;
+        }
+        User user = new User();
+        user.setId(userDTO.getId());
+        user.setUsername(userDTO.getUsername());
+        user.setEmail(userDTO.getEmail());
+        user.setQQ(userDTO.getQQ());
+        user.setPassword(userDTO.getPassword());
+        user.setGroupId(userDTO.getGroupId());
+        user.setCreatedAt(userDTO.getCreatedAt());
+        user.setUpdatedAt(userDTO.getUpdatedAt());
+        return user;
+    }
 }

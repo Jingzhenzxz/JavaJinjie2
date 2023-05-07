@@ -22,6 +22,10 @@
         SELECT * FROM user WHERE id = #{id};
     </select>
 
+    <select id="findByUsername" resultMap="userResultMap" parameterType="string">
+        SELECT * FROM user WHERE username = #{username};
+    </select>
+
     <select id="findByEmail" resultMap="userResultMap" parameterType="string">
         SELECT * FROM user WHERE email = #{email};
     </select>

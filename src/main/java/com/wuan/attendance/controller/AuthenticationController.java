@@ -27,7 +27,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<UserDTO> login(@RequestBody LoginRequest loginRequest) {
-        UserDTO userDTO = authenticationService.login(loginRequest.getUsername(), loginRequest.getPassword());
+        UserDTO userDTO = authenticationService.login(loginRequest.getEmail(), loginRequest.getPassword());
         if (userDTO != null) {
             return ResponseEntity.ok(userDTO);
         } else {
