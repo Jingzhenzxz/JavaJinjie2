@@ -33,7 +33,7 @@
 
     <insert id="insert" parameterType="com.wuan.attendance.model.User">
         INSERT INTO user (username, email, qq, password, group_id, created_at, updated_at)
-        VALUES (#{username}, #{email}, #{qq}, #{password}, #{groupId}, #{createdAt}, #{updatedAt});
+        VALUES (#{username}, #{email}, #{qq}, #{password}, #{groupId}, NOW(), NOW());
     </insert>
 
     <update id="update" parameterType="com.wuan.attendance.model.User">
@@ -45,7 +45,7 @@
         password = #{password},
         group_id = #{group_id},
         created_at = #{createdAt},
-        updated_at = #{updatedAt},
+        updated_at = NOW(),
         WHERE id = #{id}
     </update>
 
