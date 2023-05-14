@@ -12,6 +12,7 @@
         <result column="group_id" property="groupId"/>
         <result column="created_at" property="createdAt"/>
         <result column="updated_at" property="updatedAt"/>
+        <result column="userRole" property="userRole" />
     </resultMap>
 
     <select id="findAll" resultMap="userResultMap">

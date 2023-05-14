@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
     public UserDTO findByEmail(String email) {
         User user = userMapper.findByEmail(email);
         if (user == null) {
-            throw new UserNotFoundException("User not found with email: " + email);
+            return null;
         }
         return convertToDTO(user);
     }

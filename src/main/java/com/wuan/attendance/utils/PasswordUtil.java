@@ -32,6 +32,12 @@ public class PasswordUtil {
         }
     }
 
+    public static boolean verifyPassword(String password, String hashedPassword) {
+        String salt = hashedPassword.substring(0, SALT_LENGTH * 2); // 获取盐
+        String hash = hashedPassword.substring(SALT_LENGTH * 2); // 获取哈希
+        return hashPassword(salt + password).equals(hash); // 检查密码是否匹配
+    }
+
     private static String bytesToHex(byte[] bytes) {
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {

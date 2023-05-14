@@ -12,6 +12,7 @@ public class User implements Serializable {
     private Integer groupId;
     private Date createdAt;
     private Date updatedAt;
+    private String userRole;
 
     // Getters and Setters
 
@@ -77,5 +78,13 @@ public class User implements Serializable {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(String userRole) {
+        this.userRole = userRole;
     }
 }
