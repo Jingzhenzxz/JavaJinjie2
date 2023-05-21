@@ -31,8 +31,8 @@ public class WeeklyReportServiceImpl implements WeeklyReportService {
     }
 
     @Override
-    public boolean insert(WeeklyReportDTO weeklyReportDTO) {
-        return weeklyReportMapper.insert(convertToModel(weeklyReportDTO)) > 0;
+    public boolean create(WeeklyReportDTO weeklyReportDTO) {
+        return weeklyReportMapper.create(convertToModel(weeklyReportDTO)) > 0;
     }
 
     @Override
@@ -41,8 +41,13 @@ public class WeeklyReportServiceImpl implements WeeklyReportService {
     }
 
     @Override
-    public boolean delete(Integer id) {
-        return weeklyReportMapper.delete(id) > 0;
+    public boolean deleteById(Integer id) {
+        return weeklyReportMapper.deleteById(id) > 0;
+    }
+
+    @Override
+    public boolean deleteByUserIdAndWeekNumber(Integer userId, Integer weekNumber) {
+        return weeklyReportMapper.deleteByUserIdAndWeekNumber(userId, weekNumber) > 0;
     }
 
     private WeeklyReportDTO convertToDTO(WeeklyReport weeklyReport) {

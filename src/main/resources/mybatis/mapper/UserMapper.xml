@@ -9,7 +9,7 @@
         <result column="email" property="email"/>
         <result column="qq" property="qq"/>
         <result column="password" property="password"/>
-        <result column="group_id" property="groupId"/>
+        <result column="groups" property="groups"/>
         <result column="created_at" property="createdAt"/>
         <result column="updated_at" property="updatedAt"/>
         <result column="userRole" property="userRole" />
@@ -23,12 +23,19 @@
         SELECT * FROM user WHERE id = #{id};
     </select>
 
+    <select id="findByEmail" resultMap="userResultMap" parameterType="string">
+        SELECT * FROM user WHERE email = #{email};
+    </select>
+
     <select id="findByUsername" resultMap="userResultMap" parameterType="string">
         SELECT * FROM user WHERE username = #{username};
     </select>
 
-    <select id="findByEmail" resultMap="userResultMap" parameterType="string">
-        SELECT * FROM user WHERE email = #{email};
+    <select id="getAllGroupsByUserId" resultType="com.wuan.attendance.model.Group">
+        SELECT g.*
+        FROM group g
+        INNER JOIN user_group ug ON g.id = ug.group_id
+        WHERE ug.user_id = #{userId}
     </select>
 
     <insert id="insert" parameterType="com.wuan.attendance.model.User">
@@ -43,7 +50,7 @@
         email = #{email},
         qq = #{qq},
         password = #{password},
-        group_id = #{group_id},
+        group_id = #{groupId},
         created_at = #{createdAt},
         updated_at = NOW(),
         WHERE id = #{id}

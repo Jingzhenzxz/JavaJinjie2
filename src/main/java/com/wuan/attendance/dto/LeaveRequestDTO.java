@@ -1,6 +1,6 @@
 package com.wuan.attendance.dto;
 
-import com.wuan.attendance.model.LeaveStatus;
+import com.wuan.attendance.enums.LeaveStatus;
 
 import java.io.Serializable;
 import java.util.Date;

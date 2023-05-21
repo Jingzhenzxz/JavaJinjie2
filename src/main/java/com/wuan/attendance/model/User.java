@@ -2,6 +2,7 @@ package com.wuan.attendance.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public class User implements Serializable {
     private Integer id;
@@ -9,12 +10,10 @@ public class User implements Serializable {
     private String email;
     private String qq;
     private String password;
-    private Integer groupId;
+    private List<Group> groups;
     private Date createdAt;
     private Date updatedAt;
     private String userRole;
-
-    // Getters and Setters
 
     public Integer getId() {
         return id;
@@ -56,12 +55,12 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public Integer getGroupId() {
-        return groupId;
+    public List<Group> getGroups() {
+        return groups;
     }
 
-    public void setGroupId(Integer groupId) {
-        this.groupId = groupId;
+    public void setGroups(List<Group> groups) {
+        this.groups = groups;
     }
 
     public Date getCreatedAt() {

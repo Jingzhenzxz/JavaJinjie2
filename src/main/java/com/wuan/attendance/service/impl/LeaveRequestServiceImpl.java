@@ -27,8 +27,8 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
     }
 
     @Override
-    public List<LeaveRequestDTO> findByUserId(Integer userId) {
-        return leaveRequestMapper.findByUserId(userId).stream().map(this::convertToDTO).collect(Collectors.toList());
+    public LeaveRequestDTO findByUserIdAndWeekNumber(Integer userId, Integer weekNumber) {
+        return convertToDTO(leaveRequestMapper.findByUserIdAndWeekNumber(userId, weekNumber));
     }
 
     @Override

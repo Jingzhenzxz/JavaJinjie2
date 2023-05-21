@@ -1,7 +1,7 @@
 package com.wuan.attendance.service;
 
+import com.wuan.attendance.dto.GroupDTO;
 import com.wuan.attendance.dto.UserDTO;
-import com.wuan.attendance.model.User;
 
 import java.util.List;
 
@@ -20,5 +20,5 @@ public interface UserService {
 
     boolean delete(Integer id);
 
-    boolean changePassword(User user, String newPassword);
+    boolean changePassword(UserDTO userDTO, String newPassword);
 }

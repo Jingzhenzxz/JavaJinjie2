@@ -8,7 +8,7 @@
         <result column="user_id" property="userId"/>
         <result column="reason" property="reason"/>
         <result column="week_number" property="weekNumber"/>
-        <result column="status" property="status" javaType="com.wuan.attendance.model.LeaveStatus"/>
+        <result column="status" property="status" javaType="com.wuan.attendance.enums.LeaveStatus"/>
         <result column="created_at" property="createdAt"/>
         <result column="updated_at" property="updatedAt"/>
     </resultMap>
@@ -21,8 +21,8 @@
         SELECT * FROM leave_request WHERE id = #{id};
     </select>
 
-    <select id="findByUserId" resultMap="leaveRequestResultMap" parameterType="int">
-        SELECT * FROM leave_request WHERE user_id = #{userId};
+    <select id="findByUserIdAndWeekNumber" resultMap="leaveRequestResultMap" parameterType="com.wuan.attendance.model.LeaveRequestKey">
+        SELECT * FROM leave_request WHERE user_id = #{userId} AND week_number = #{weekNumber};
     </select>
 
     <insert id="insert" parameterType="com.wuan.attendance.model.LeaveRequest" useGeneratedKeys="true" keyProperty="id">

@@ -1,4 +1,4 @@
-package com.wuan.attendance.model;
+package com.wuan.attendance.enums;
 
 public enum LeaveStatus {
     已提交,

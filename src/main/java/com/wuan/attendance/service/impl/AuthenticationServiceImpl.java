@@ -2,9 +2,9 @@ package com.wuan.attendance.service.impl;
 
 import com.wuan.attendance.dto.RegisterRequest;
 import com.wuan.attendance.dto.UserDTO;
-import com.wuan.attendance.exception.BadCredentialsException;
-import com.wuan.attendance.exception.UserNotFoundException;
-import com.wuan.attendance.exception.UserAlreadyExistsException;
+import com.wuan.attendance.enums.UserRole;
+import com.wuan.attendance.exception.AuthenticationException;
+import com.wuan.attendance.exception.UserException;
 import com.wuan.attendance.service.AuthenticationService;
 import com.wuan.attendance.service.UserService;
 import com.wuan.attendance.utils.PasswordUtil;
@@ -21,12 +21,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         UserDTO user = userService.findByEmail(email);
 
         if (user == null) {
-            throw new UserNotFoundException("User not found (email: " + email + ")");
+            throw new UserException("User not found (email: " + email + ")");
         }
 
         boolean passwordMatch = PasswordUtil.verifyPassword(password, user.getPassword());
         if (!passwordMatch) {
-            throw new BadCredentialsException("Invalid password");
+            throw new AuthenticationException("Invalid password");
         }
 
         return user;
@@ -41,7 +41,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         // 检查邮箱是否已经存在
         if (userService.findByEmail(registerRequest.getEmail()) != null) {
-            throw new UserAlreadyExistsException("UserEmail already exists");
+            throw new UserException("UserEmail already exists!");
         }
 
         // 创建新用户
@@ -50,13 +50,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         newUser.setEmail(registerRequest.getEmail());
         newUser.setQQ(registerRequest.getQQ());
         newUser.setPassword(PasswordUtil.encode(registerRequest.getPassword()));
-        newUser.setRole("USER"); // 设置用户级别
+        newUser.setUserRole(UserRole.USER); // 设置用户级别
 
         // 将新用户插入数据库
         userService.insert(newUser);
-
         // 返回新创建的用户
         return newUser;
     }
-
 }

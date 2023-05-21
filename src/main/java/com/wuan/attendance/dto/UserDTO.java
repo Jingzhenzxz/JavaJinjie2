@@ -1,7 +1,11 @@
 package com.wuan.attendance.dto;
 
+import com.wuan.attendance.enums.UserRole;
+import com.wuan.attendance.model.Group;
+
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 public class UserDTO implements Serializable {
     private Integer id;
@@ -9,10 +13,10 @@ public class UserDTO implements Serializable {
     private String email;
     private String qq;
     private String password;
-    private Integer groupId;
+    private List<GroupDTO> groups;
     private Date createdAt;
     private Date updatedAt;
-    private String role;
+    private UserRole userRole;
 
 
     public Integer getId() {
@@ -55,12 +59,12 @@ public class UserDTO implements Serializable {
         this.password = password;
     }
 
-    public Integer getGroupId() {
-        return groupId;
+    public List<GroupDTO> getGroups() {
+        return groups;
     }
 
-    public void setGroupId(Integer groupId) {
-        this.groupId = groupId;
+    public void setGroups(List<GroupDTO> groups) {
+        this.groups = groups;
     }
 
     public Date getCreatedAt() {
@@ -79,11 +83,11 @@ public class UserDTO implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
     }
 
-    public String getRole() {
-        return role;
+    public UserRole getUserRole() {
+        return userRole;
     }
 }

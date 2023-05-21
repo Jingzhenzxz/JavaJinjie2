@@ -10,7 +10,7 @@ public interface GroupMapper {
     List<Group> findAll();
 
     Group findById(Integer id);
-
+    
     int insert(Group group);
 
     int update(Group group);

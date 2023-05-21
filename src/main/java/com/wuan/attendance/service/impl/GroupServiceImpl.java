@@ -3,6 +3,7 @@ package com.wuan.attendance.service.impl;
 import com.wuan.attendance.dto.GroupDTO;
 import com.wuan.attendance.exception.GroupNotFoundException;
 import com.wuan.attendance.mapper.GroupMapper;
+import com.wuan.attendance.mapper.UserMapper;
 import com.wuan.attendance.model.Group;
 import com.wuan.attendance.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@ public class GroupServiceImpl implements GroupService {
 
     @Autowired
     private GroupMapper groupMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     public List<GroupDTO> findAll() {

@@ -11,10 +11,11 @@ public interface WeeklyReportService {
 
     List<WeeklyReportDTO> findByUserId(Integer userId);
 
-    boolean insert(WeeklyReportDTO weeklyReportDTO);
+    boolean create(WeeklyReportDTO weeklyReportDTO);
 
     boolean update(WeeklyReportDTO weeklyReportDTO);
 
-    boolean delete(Integer id);
-    // Other custom methods if needed
+    boolean deleteById(Integer id);
+
+    boolean deleteByUserIdAndWeekNumber(Integer userId, Integer weekNumber);
 }

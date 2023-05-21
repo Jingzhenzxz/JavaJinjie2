@@ -13,9 +13,11 @@ public interface WeeklyReportMapper {
 
     List<WeeklyReport> findByUserId(Integer userId);
 
-    int insert(WeeklyReport weeklyReport);
+    int create(WeeklyReport weeklyReport);
 
     int update(WeeklyReport weeklyReport);
 
-    int delete(Integer id);
+    int deleteById(Integer id);
+
+    int deleteByUserIdAndWeekNumber(Integer userId, Integer weekNumber);
 }

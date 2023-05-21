@@ -11,7 +11,7 @@ public interface LeaveRequestMapper {
 
     LeaveRequest findById(Integer id);
 
-    List<LeaveRequest> findByUserId(Integer userId);
+    LeaveRequest findByUserIdAndWeekNumber(Integer userId, Integer weekNumber);
 
     int insert(LeaveRequest leaveRequest);
 

@@ -15,26 +15,36 @@
         <result column="status" property="status"/>
         <result column="created_at" property="createdAt"/>
     </resultMap>
+
     <select id="findAll" resultMap="weeklyReportResultMap">
         SELECT * FROM weekly_report;
     </select>
+
     <select id="findById" resultMap="weeklyReportResultMap" parameterType="int">
         SELECT * FROM weekly_report WHERE id = #{id};
     </select>
+
     <select id="findByUserId" resultMap="weeklyReportResultMap" parameterType="int">
         SELECT * FROM weekly_report
         WHERE user_id = #{userId}
     </select>
-    <insert id="insert" parameterType="com.wuan.attendance.model.WeeklyReport">
+
+    <insert id="create" parameterType="com.wuan.attendance.model.WeeklyReport">
         INSERT INTO weekly_report (user_id, group_id, week_number, content_completed, content_problems, content_plan, content_link, status)
         VALUES (#{userId}, #{groupId}, #{weekNumber}, #{contentCompleted}, #{contentProblems}, #{contentPlan}, #{contentLink}, #{status});
     </insert>
+
     <update id="update" parameterType="com.wuan.attendance.model.WeeklyReport">
         UPDATE weekly_report
         SET user_id = #{userId}, group_id = #{groupId}, week_number = #{weekNumber}, content_completed = #{contentCompleted}, content_problems = #{contentProblems}, content_plan = #{contentPlan}, content_link = #{contentLink}, status = #{status}
         WHERE id = #{id};
     </update>
-    <delete id="delete" parameterType="int">
+
+    <delete id="deleteById" parameterType="int">
         DELETE FROM weekly_report WHERE id = #{id};
+    </delete>
+
+    <delete id="deleteByUserIdAndWeekNumber" parameterType="com.wuan.attendance.model.WeeklyReportKey">
+        DELETE FROM weekly_report WHERE user_id = #{userId} AND week_number = #{weekNumber};
     </delete>
 </mapper>
