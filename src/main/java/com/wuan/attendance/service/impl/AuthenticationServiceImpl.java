@@ -1,14 +1,17 @@
 package com.wuan.attendance.service.impl;
 
+import com.wuan.attendance.dto.LoginResponse;
 import com.wuan.attendance.dto.RegisterRequest;
 import com.wuan.attendance.dto.UserDTO;
 import com.wuan.attendance.enums.UserRole;
 import com.wuan.attendance.exception.AuthenticationException;
 import com.wuan.attendance.exception.UserException;
 import com.wuan.attendance.service.AuthenticationService;
+import com.wuan.attendance.service.JwtProvider;
 import com.wuan.attendance.service.UserService;
 import com.wuan.attendance.utils.PasswordUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,7 +23,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public UserDTO login(String email, String password) {
+    public ResponseEntity<?> login(String email, String password) {
         UserDTO user = userService.findByEmail(email);
 
         if (user == null) {
@@ -32,8 +35,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new AuthenticationException("Invalid password");
         }
 
-        return user;
+        JwtProvider jwtProvider = new JwtProvider();
+        String token = jwtProvider.generateToken(email);
+
+        return ResponseEntity.ok(new LoginResponse(user, token));
     }
+
 
     @Override
     public UserDTO register(RegisterRequest registerRequest) {

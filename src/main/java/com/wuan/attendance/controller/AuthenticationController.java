@@ -29,13 +29,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserDTO> login(@RequestBody LoginRequest loginRequest) {
-        UserDTO userDTO = authenticationService.login(loginRequest.getEmail(), loginRequest.getPassword());
-        if (userDTO != null) {
-            return ResponseEntity.ok(userDTO);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        return authenticationService.login(loginRequest.getEmail(), loginRequest.getPassword());
     }
 }
-

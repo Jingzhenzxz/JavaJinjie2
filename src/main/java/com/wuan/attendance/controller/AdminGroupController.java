@@ -13,12 +13,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin/groups")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('ADMIN')") // 需要安全框架的支持，例如Spring Security
 public class AdminGroupController {
 
     @Autowired
     private GroupService groupService;
-    private HttpServletRequest httpServletRequest;
 
     @GetMapping
     public ResponseEntity<List<GroupDTO>> getAllGroups() {

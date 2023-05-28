@@ -14,7 +14,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/admin/users")
-@PreAuthorize("hasRole('ADMIN')") // 需要安全框架的支持，例如Spring Security
+@PreAuthorize("hasRole('ADMIN')")
 public class AdminUserController {
     @Autowired
     private UserService userService;
