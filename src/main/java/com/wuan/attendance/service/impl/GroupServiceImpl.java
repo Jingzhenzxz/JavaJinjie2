@@ -16,16 +16,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class GroupServiceImpl implements GroupService {
-    private final GroupMapper groupMapper;
-    private final UserMapper userMapper;
-    private final UserGroupService userGroupService;
-
     @Autowired
-    public GroupServiceImpl(GroupMapper groupMapper, UserMapper userMapper, UserGroupService userGroupService) {
-        this.groupMapper = groupMapper;
-        this.userMapper = userMapper;
-        this.userGroupService = userGroupService;
-    }
+    private GroupMapper groupMapper;
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private UserGroupService userGroupService;
 
     @Override
     public List<GroupDTO> findAll() {

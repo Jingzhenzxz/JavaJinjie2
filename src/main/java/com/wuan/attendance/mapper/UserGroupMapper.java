@@ -1,7 +1,10 @@
 package com.wuan.attendance.mapper;
 
+import org.apache.ibatis.annotations.Mapper;
+
 import java.util.List;
 
+@Mapper
 public interface UserGroupMapper {
     List<Integer> getAllGroupIdsByUserId(Integer userId);
 
