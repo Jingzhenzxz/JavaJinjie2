@@ -12,8 +12,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class WeeklyReportServiceImpl implements WeeklyReportService {
+    private final WeeklyReportMapper weeklyReportMapper;
+
     @Autowired
-    private WeeklyReportMapper weeklyReportMapper;
+    public WeeklyReportServiceImpl(WeeklyReportMapper weeklyReportMapper) {
+        this.weeklyReportMapper = weeklyReportMapper;
+    }
 
     @Override
     public List<WeeklyReportDTO> findAll() {

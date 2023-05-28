@@ -4,7 +4,6 @@ import com.wuan.attendance.dto.GroupDTO;
 import com.wuan.attendance.dto.UserDTO;
 import com.wuan.attendance.exception.GroupNotFoundException;
 import com.wuan.attendance.mapper.GroupMapper;
-import com.wuan.attendance.mapper.UserMapper;
 import com.wuan.attendance.model.Group;
 import com.wuan.attendance.service.GroupService;
 import com.wuan.attendance.service.UserGroupService;
@@ -16,12 +15,14 @@ import java.util.stream.Collectors;
 
 @Service
 public class GroupServiceImpl implements GroupService {
+    private final GroupMapper groupMapper;
+    private final UserGroupService userGroupService;
+
     @Autowired
-    private GroupMapper groupMapper;
-    @Autowired
-    private UserMapper userMapper;
-    @Autowired
-    private UserGroupService userGroupService;
+    public GroupServiceImpl(GroupMapper groupMapper, UserGroupService userGroupService) {
+        this.groupMapper = groupMapper;
+        this.userGroupService = userGroupService;
+    }
 
     @Override
     public List<GroupDTO> findAll() {

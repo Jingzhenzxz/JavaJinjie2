@@ -5,7 +5,6 @@ import com.wuan.attendance.mapper.LeaveRequestMapper;
 import com.wuan.attendance.model.LeaveRequest;
 import com.wuan.attendance.service.LeaveRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,8 +12,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class LeaveRequestServiceImpl implements LeaveRequestService {
+    private final LeaveRequestMapper leaveRequestMapper;
+
     @Autowired
-    private LeaveRequestMapper leaveRequestMapper;
+    public LeaveRequestServiceImpl(LeaveRequestMapper leaveRequestMapper) {
+    this.leaveRequestMapper = leaveRequestMapper;
+    }
 
     @Override
     public List<LeaveRequestDTO> findAll() {

@@ -17,12 +17,16 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserGroupServiceImpl implements UserGroupService {
+    private final UserGroupMapper userGroupMapper;
+    private final GroupMapper groupMapper;
+    private final UserMapper userMapper;
+
     @Autowired
-    private UserGroupMapper userGroupMapper;
-    @Autowired
-    private GroupMapper groupMapper;
-    @Autowired
-    private UserMapper userMapper;
+    public UserGroupServiceImpl(UserGroupMapper userGroupMapper, GroupMapper groupMapper, UserMapper userMapper) {
+        this.userGroupMapper = userGroupMapper;
+        this.groupMapper = groupMapper;
+        this.userMapper = userMapper;
+    }
 
     @Override
     public List<GroupDTO> getAllGroupsByUserId(Integer userId) {
