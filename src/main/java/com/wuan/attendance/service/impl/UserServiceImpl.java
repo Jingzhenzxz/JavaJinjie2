@@ -6,18 +6,25 @@ import com.wuan.attendance.exception.UserException;
 import com.wuan.attendance.mapper.UserMapper;
 import com.wuan.attendance.model.Group;
 import com.wuan.attendance.model.User;
+import com.wuan.attendance.service.UserGroupService;
 import com.wuan.attendance.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
-
+    private final UserMapper userMapper;
+    private final UserGroupService userGroupService;
     @Autowired
-    private UserMapper userMapper;
+    public UserServiceImpl(UserMapper userMapper, UserGroupService userGroupService) {
+        this.userMapper = userMapper;
+        this.userGroupService = userGroupService;
+    }
 
     @Override
     public List<UserDTO> findAll() {
@@ -53,17 +60,53 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean insert(UserDTO userDTO) {
-        return userMapper.insert(convertUserDTOToUserModel(userDTO)) > 0;
+        List<GroupDTO> groups = userDTO.getGroups();
+        Integer userId = userDTO.getId();
+        boolean allUserGroupRelationsAreCreated = true;
+        for (GroupDTO group : groups) {
+            boolean userGroupRelationIsCreated = userGroupService.insertUserGroupRelation(userId, group.getId());
+            allUserGroupRelationsAreCreated = userGroupRelationIsCreated && allUserGroupRelationsAreCreated;
+        }
+        return userMapper.insert(convertUserDTOToUserModel(userDTO)) > 0 && allUserGroupRelationsAreCreated;
     }
 
     @Override
     public boolean update(UserDTO userDTO) {
+        List<GroupDTO> updatedGroups = userDTO.getGroups();
+        Integer userId = userDTO.getId();
+        // 该用户的原来的群组
+        List<GroupDTO> originalGroups = findById(userId).getGroups();
+        // 把它变成HashMap以便查找
+        Map<Integer, GroupDTO> updatedGroupMap = updatedGroups.stream()
+                .collect(Collectors.toMap(GroupDTO::getId, Function.identity()));
+
+        for (GroupDTO originalGroup : originalGroups) {
+            if (!updatedGroupMap.containsKey(originalGroup.getId())) {
+                // 如果原来的群组在更新的群组列表中不存在，删除该关系
+                userGroupService.deleteGroupOfUser(userId, originalGroup.getId());
+            }
+        }
+
+        for (GroupDTO updatedGroup : updatedGroups) {
+            if (!originalGroups.contains(updatedGroup)) {
+                // 如果更新的群组在原来的群组列表中不存在，添加新的关系
+                userGroupService.insertUserGroupRelation(userId, updatedGroup.getId());
+            }
+        }
+
         return userMapper.update(convertUserDTOToUserModel(userDTO)) > 0;
     }
 
+
     @Override
     public boolean delete(Integer id) {
-        return userMapper.delete(id) > 0;
+        List<GroupDTO> groupsOfUser = userGroupService.getAllGroupsByUserId(id);
+        boolean allGroupsOfUserAreDeleted = true;
+        for (GroupDTO group : groupsOfUser) {
+            boolean groupOfUserIsDeleted = userGroupService.deleteGroupOfUser(id, group.getId());
+            allGroupsOfUserAreDeleted = groupOfUserIsDeleted && allGroupsOfUserAreDeleted;
+        }
+        return userMapper.delete(id) > 0 && allGroupsOfUserAreDeleted;
     }
 
     @Override

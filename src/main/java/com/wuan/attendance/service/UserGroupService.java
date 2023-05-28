@@ -7,7 +7,10 @@ import java.util.List;
 
 public interface UserGroupService {
     List<GroupDTO> getAllGroupsByUserId(Integer userId);
+
     List<UserDTO> getAllUsersByGroupId(Integer groupId);
 
-    boolean deleteSomeGroupsOfUser(Integer userId, List<Integer> groupId);
+    boolean insertUserGroupRelation(Integer userId, Integer groupId);
+
+    boolean deleteGroupOfUser(Integer userId, Integer groupId);
 }

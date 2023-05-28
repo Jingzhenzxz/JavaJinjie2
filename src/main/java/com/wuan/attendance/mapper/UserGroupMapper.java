@@ -1,14 +1,13 @@
 package com.wuan.attendance.mapper;
 
-import com.wuan.attendance.model.Group;
-import com.wuan.attendance.model.User;
-
 import java.util.List;
 
 public interface UserGroupMapper {
-    List<Group> getAllGroupsByUserId(Integer userId);
-    Group getGroupByUserIdAndGroupId(Integer userId, Integer groupId);
-    List<User> getAllUsersByGroupId(Integer groupId);
+    List<Integer> getAllGroupIdsByUserId(Integer userId);
 
-    boolean deleteSomeGroupsOfUser(Integer userId, List<Integer> groupIds);
+    List<Integer> getAllUserIdsByGroupId(Integer groupId);
+
+    int insertUserGroupRelation(Integer userId, Integer groupId);
+
+    int deleteGroupOfUser(Integer userId, Integer groupId);
 }

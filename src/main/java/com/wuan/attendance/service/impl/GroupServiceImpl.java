@@ -1,11 +1,13 @@
 package com.wuan.attendance.service.impl;
 
 import com.wuan.attendance.dto.GroupDTO;
+import com.wuan.attendance.dto.UserDTO;
 import com.wuan.attendance.exception.GroupNotFoundException;
 import com.wuan.attendance.mapper.GroupMapper;
 import com.wuan.attendance.mapper.UserMapper;
 import com.wuan.attendance.model.Group;
 import com.wuan.attendance.service.GroupService;
+import com.wuan.attendance.service.UserGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +16,16 @@ import java.util.stream.Collectors;
 
 @Service
 public class GroupServiceImpl implements GroupService {
+    private final GroupMapper groupMapper;
+    private final UserMapper userMapper;
+    private final UserGroupService userGroupService;
 
     @Autowired
-    private GroupMapper groupMapper;
-
-    @Autowired
-    private UserMapper userMapper;
+    public GroupServiceImpl(GroupMapper groupMapper, UserMapper userMapper, UserGroupService userGroupService) {
+        this.groupMapper = groupMapper;
+        this.userMapper = userMapper;
+        this.userGroupService = userGroupService;
+    }
 
     @Override
     public List<GroupDTO> findAll() {
@@ -47,7 +53,15 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public boolean delete(Integer id) {
-        return groupMapper.delete(id) > 0;
+        // 先获取到对应于该群组id的所有用户
+        List<UserDTO> users = userGroupService.getAllUsersByGroupId(id);
+        // 把这些用户和该群组之间的关系删掉
+        boolean allUserGroupRelationsAreDeleted = true;
+        for (UserDTO user : users) {
+            boolean userGroupRelationIsDeleted = userGroupService.deleteGroupOfUser(user.getId(), id);
+            allUserGroupRelationsAreDeleted = allUserGroupRelationsAreDeleted && userGroupRelationIsDeleted;
+        }
+        return groupMapper.delete(id) > 0 && allUserGroupRelationsAreDeleted;
     }
 
     private GroupDTO convertToDTO(Group group) {

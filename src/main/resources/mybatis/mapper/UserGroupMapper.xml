@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.wuan.attendance.mapper.UserGroupMapper">
+
+    <select id="getAllGroupIdsByUserId" resultType="java.lang.Integer">
+        SELECT group_id FROM user_group WHERE user_id = #{userId}
+    </select>
+
+    <select id="getAllUserIdsByGroupId" resultType="java.lang.Integer">
+        SELECT user_id FROM user_group WHERE group_id = #{groupId}
+    </select>
+
+    <insert id="insertUserGroupRelation">
+        INSERT INTO user_group (user_id, group_id) VALUES (#{userId}, #{groupId})
+    </insert>
+
+    <delete id="deleteGroupOfUser">
+        DELETE FROM user_group WHERE user_id = #{userId} AND group_id = #{groupId}
+    </delete>
+
+</mapper>

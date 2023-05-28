@@ -17,12 +17,18 @@ import java.util.stream.Stream;
 @RestController
 @RequestMapping("/api/user/groups")
 public class GroupController {
+    private final GroupService groupService;
+    private final UserService userService;
+    private final UserGroupService userGroupService;
+    private final HttpServletRequest httpServletRequest;
 
     @Autowired
-    private GroupService groupService;
-    private UserService userService;
-    private UserGroupService userGroupService;
-    private HttpServletRequest httpServletRequest;
+    public GroupController(GroupService groupService, UserService userService, UserGroupService userGroupService, HttpServletRequest httpServletRequest) {
+        this.groupService = groupService;
+        this.userService = userService;
+        this.userGroupService = userGroupService;
+        this.httpServletRequest = httpServletRequest;
+    }
 
     @GetMapping
     public ResponseEntity<Object> getMyGroups() {
@@ -31,12 +37,12 @@ public class GroupController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
         }
 
-        GroupDTO groups = groupService.findById(userId);
+        List<GroupDTO> groups = userGroupService.getAllGroupsByUserId(userId);
         return ResponseEntity.ok(groups);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Object> updateMyGroup(@RequestBody GroupDTO groupDTO) {
+    public ResponseEntity<Object> updateMyGroups(@RequestBody GroupDTO groupDTO) {
         boolean updated = groupService.update(groupDTO);
         if (updated) {
             return ResponseEntity.status(HttpStatus.CREATED).body(groupDTO);
@@ -52,7 +58,7 @@ public class GroupController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
         }
 
-        boolean deleted = userGroupService.deleteSomeGroupsOfUser(userId, Stream.of(groupId).collect(Collectors.toList()));
+        boolean deleted = userGroupService.deleteGroupOfUser(userId, groupId);
         if (deleted) {
             return ResponseEntity.ok().body("Delete group successfully");
         } else {

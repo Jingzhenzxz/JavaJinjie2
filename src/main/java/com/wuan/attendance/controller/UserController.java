@@ -1,6 +1,8 @@
 package com.wuan.attendance.controller;
 
+import com.wuan.attendance.dto.GroupDTO;
 import com.wuan.attendance.dto.UserDTO;
+import com.wuan.attendance.service.UserGroupService;
 import com.wuan.attendance.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -8,17 +10,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
+    private final UserService userService;
+    private final HttpServletRequest request;
+    private final UserGroupService userGroupService;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
-    private HttpServletRequest request;
+    public UserController(UserService userService, HttpServletRequest request, UserGroupService userGroupService) {
+        this.userService = userService;
+        this.request = request;
+        this.userGroupService = userGroupService;
+    }
 
     @GetMapping
     public ResponseEntity<Object> getMyAccountById() {
@@ -53,8 +60,9 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
         }
 
-        boolean deleted = userService.delete(userId);
-        if (deleted) {
+        boolean userIsDeleted = userService.delete(userId);
+
+        if (userIsDeleted) {
             return ResponseEntity.ok("Delete user successfully");
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Delete user failed");
