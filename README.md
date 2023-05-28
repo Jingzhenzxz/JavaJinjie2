@@ -68,8 +68,8 @@ CREATE TABLE `weekly_report` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 ```
 ## 下载并运行项目
-下载不用说了，把application.properties文件中
-```
+下载不用说了。把application.properties文件中
+```properties
 spring.datasource.password=yourpassword
 ```
 中的yourpassword改成你的MySQL的密码。然后运行attendanceApplication类。
