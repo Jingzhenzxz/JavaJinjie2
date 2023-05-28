@@ -13,8 +13,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
+    private final UserService userService;
     @Autowired
-    private UserService userService;
+    public AuthenticationServiceImpl(UserService userService) {
+        this.userService = userService;
+    }
 
     @Override
     public UserDTO login(String email, String password) {

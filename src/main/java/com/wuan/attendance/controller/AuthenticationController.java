@@ -15,9 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/authentication")
 public class AuthenticationController {
+    private final AuthenticationService authenticationService;
 
     @Autowired
-    private AuthenticationService authenticationService;
+    public AuthenticationController(AuthenticationService authenticationService) {
+        this.authenticationService = authenticationService;
+    }
 
     @PostMapping("/register")
     public ResponseEntity<UserDTO> register(@RequestBody RegisterRequest registerRequest) {
