@@ -5,7 +5,7 @@ import com.wuan.attendance.dto.UserDTO;
 import org.springframework.http.ResponseEntity;
 
 public interface AuthenticationService {
-    ResponseEntity<?> login(String email, String password);
+    ResponseEntity<?> register(RegisterRequest registerRequest);
 
-    UserDTO register(RegisterRequest registerRequest);
+    ResponseEntity<?> login(String email, String password);
 }

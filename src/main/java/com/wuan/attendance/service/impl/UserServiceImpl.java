@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final UserGroupService userGroupService;
+
     @Autowired
     public UserServiceImpl(UserMapper userMapper, UserGroupService userGroupService) {
         this.userMapper = userMapper;
@@ -37,6 +38,9 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new UserException("User not found with id: " + id);
         }
+
+        List<GroupDTO> groupDTOs = userGroupService.getAllGroupsByUserId(user.getId());
+        user.setGroups(groupDTOs.stream().map(this::convertGroupDTOToGroupModel).collect(Collectors.toList()));
         return convertUserModelToUserDTO(user);
     }
 
@@ -44,8 +48,11 @@ public class UserServiceImpl implements UserService {
     public UserDTO findByEmail(String email) {
         User user = userMapper.findByEmail(email);
         if (user == null) {
-            return null;
+            throw new UserException("User not found with email: " + email);
         }
+
+        List<GroupDTO> groupDTOs = userGroupService.getAllGroupsByUserId(user.getId());
+        user.setGroups(groupDTOs.stream().map(this::convertGroupDTOToGroupModel).collect(Collectors.toList()));
         return convertUserModelToUserDTO(user);
     }
 
@@ -55,13 +62,16 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             throw new UserException("User not found with username: " + username);
         }
+
+        List<GroupDTO> groupDTOs = userGroupService.getAllGroupsByUserId(user.getId());
+        user.setGroups(groupDTOs.stream().map(this::convertGroupDTOToGroupModel).collect(Collectors.toList()));
         return convertUserModelToUserDTO(user);
     }
 
     @Override
     public boolean insert(UserDTO userDTO) {
-        List<GroupDTO> groups = userDTO.getGroups();
         Integer userId = userDTO.getId();
+        List<GroupDTO> groups = userGroupService.getAllGroupsByUserId(userId);
         boolean allUserGroupRelationsAreCreated = true;
         for (GroupDTO group : groups) {
             boolean userGroupRelationIsCreated = userGroupService.insertUserGroupRelation(userId, group.getId());
@@ -72,12 +82,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean update(UserDTO userDTO) {
-        List<GroupDTO> updatedGroups = userDTO.getGroups();
         Integer userId = userDTO.getId();
+        List<GroupDTO> newGroups = userDTO.getGroups();
         // 该用户的原来的群组
-        List<GroupDTO> originalGroups = findById(userId).getGroups();
+        List<GroupDTO> originalGroups = userGroupService.getAllGroupsByUserId(userId);
         // 把它变成HashMap以便查找
-        Map<Integer, GroupDTO> updatedGroupMap = updatedGroups.stream()
+        Map<Integer, GroupDTO> updatedGroupMap = newGroups.stream()
                 .collect(Collectors.toMap(GroupDTO::getId, Function.identity()));
 
         for (GroupDTO originalGroup : originalGroups) {
@@ -87,7 +97,7 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        for (GroupDTO updatedGroup : updatedGroups) {
+        for (GroupDTO updatedGroup : newGroups) {
             if (!originalGroups.contains(updatedGroup)) {
                 // 如果更新的群组在原来的群组列表中不存在，添加新的关系
                 userGroupService.insertUserGroupRelation(userId, updatedGroup.getId());
@@ -127,9 +137,13 @@ public class UserServiceImpl implements UserService {
         userDTO.setEmail(user.getEmail());
         userDTO.setQQ(user.getQQ());
         userDTO.setPassword(user.getPassword());
-        userDTO.setGroups(user.getGroups().stream().map(this::convertGroupModelToGroupDTO).collect(Collectors.toList()));
+
+        List<GroupDTO> groups = userGroupService.getAllGroupsByUserId(user.getId());
+        userDTO.setGroups(groups);
+
         userDTO.setCreatedAt(user.getCreatedAt());
         userDTO.setUpdatedAt(user.getUpdatedAt());
+        userDTO.setUserRole(user.getUserRole());
         return userDTO;
     }
 
@@ -144,9 +158,13 @@ public class UserServiceImpl implements UserService {
         user.setEmail(userDTO.getEmail());
         user.setQQ(userDTO.getQQ());
         user.setPassword(userDTO.getPassword());
-        user.setGroups(userDTO.getGroups().stream().map(this::convertGroupDTOToGroupModel).collect(Collectors.toList()));
+
+        List<GroupDTO> groups = userGroupService.getAllGroupsByUserId(userDTO.getId());
+        user.setGroups(groups.stream().map(this::convertGroupDTOToGroupModel).collect(Collectors.toList()));
+
         user.setCreatedAt(userDTO.getCreatedAt());
         user.setUpdatedAt(userDTO.getUpdatedAt());
+        user.setUserRole(userDTO.getUserRole());
         return user;
     }
 

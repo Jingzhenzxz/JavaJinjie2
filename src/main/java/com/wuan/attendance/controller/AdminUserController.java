@@ -3,6 +3,7 @@ package com.wuan.attendance.controller;
 import com.wuan.attendance.dto.UserDTO;
 import com.wuan.attendance.exception.UserException;
 import com.wuan.attendance.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,15 +13,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/admin/users")
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminUserController {
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public AdminUserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers() {
+        log.info("getAllUsers");
         List<UserDTO> users = userService.findAll();
         return ResponseEntity.ok(users);
     }

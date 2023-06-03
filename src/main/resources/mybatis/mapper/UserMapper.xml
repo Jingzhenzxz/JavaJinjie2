@@ -38,8 +38,8 @@
 <!--    </select>-->
 
     <insert id="insert" parameterType="com.wuan.attendance.model.User">
-        INSERT INTO user (username, email, qq, password, created_at, updated_at)
-        VALUES (#{username}, #{email}, #{qq}, #{password}, NOW(), NOW());
+        INSERT INTO user (username, email, qq, password, created_at, updated_at, userRole)
+        VALUES (#{username}, #{email}, #{qq}, #{password}, NOW(), NOW(), #{userRole});
     </insert>
 
     <update id="update" parameterType="com.wuan.attendance.model.User">
@@ -51,6 +51,7 @@
         password = #{password},
         created_at = #{createdAt},
         updated_at = NOW(),
+        userRole = #{userRole},
         WHERE id = #{id}
     </update>
 

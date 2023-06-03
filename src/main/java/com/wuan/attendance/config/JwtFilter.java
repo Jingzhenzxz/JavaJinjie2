@@ -1,6 +1,11 @@
 package com.wuan.attendance.config;
 
 import com.wuan.attendance.utils.JwtUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -11,23 +16,49 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Collections;
 
+@Slf4j
 @Component
 public class JwtFilter extends GenericFilterBean {
     private static final String AUTH_TOKEN_KEY = "Authorization";
+    private final JwtUtil jwtUtil;
+
+    @Autowired
+    public JwtFilter(JwtUtil jwtUtil) {
+        log.debug("JwtFilter的构造函数，注入jwtUtil");
+        this.jwtUtil = jwtUtil;
+    }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
+        log.debug("进入doFilter方法");
         HttpServletRequest httpRequest = (HttpServletRequest) request;
+
+        String requestURI = httpRequest.getRequestURI();
+        // Ignore login requests
+        if (requestURI.contains("/api/authentication/login")) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         // 从请求中获取 JWT
         String authToken = getAuthToken(httpRequest);
-        if (authToken != null) {
-            // 如果找到 JWT，使用 JwtUtil.getUserIdFromToken 方法从 JWT 中获取用户 ID
-            Integer userId = JwtUtil.getUserIdFromToken(authToken);
-            // 将用户 ID 设置到请求的属性中
-            request.setAttribute("userId", userId);
+        log.debug("Got auth token from request: {}", authToken);
+
+        if (authToken != null && jwtUtil.validateToken(authToken)) {
+            log.debug("Auth token is valid");
+            // 从 JWT 中获取用户信息
+            Integer userId = jwtUtil.getUserIdFromJwt(authToken);
+            String role = jwtUtil.getRoleFromJwt(authToken);
+            log.debug("Got user ID and role from JWT: {} {}", userId, role);
+
+            // 创建一个认证令牌（Authentication Token），并将其设置到 Spring Security 的上下文中
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(userId, null, Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role)));
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            log.debug("Set authentication to security context");
         }
 
         // 将请求和响应传递给过滤器链的下一个元素

@@ -12,8 +12,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/admin/leave-requests")
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminLeaveRequestController {
+    private final LeaveRequestService leaveRequestService;
+
     @Autowired
-    private LeaveRequestService leaveRequestService;
+    public AdminLeaveRequestController(LeaveRequestService leaveRequestService) {
+        this.leaveRequestService = leaveRequestService;
+    }
 
     @GetMapping
     public ResponseEntity<Iterable<LeaveRequestDTO>> getAllLeaveRequests() {

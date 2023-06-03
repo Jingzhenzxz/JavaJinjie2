@@ -1,5 +1,7 @@
 package com.wuan.attendance.model;
 
+import com.wuan.attendance.enums.UserRole;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -13,7 +15,7 @@ public class User implements Serializable {
     private List<Group> groups;
     private Date createdAt;
     private Date updatedAt;
-    private String userRole;
+    private UserRole userRole;
 
     public Integer getId() {
         return id;
@@ -79,11 +81,11 @@ public class User implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public String getUserRole() {
+    public UserRole getUserRole() {
         return userRole;
     }
 
-    public void setUserRole(String userRole) {
+    public void setUserRole(UserRole userRole) {
         this.userRole = userRole;
     }
 }

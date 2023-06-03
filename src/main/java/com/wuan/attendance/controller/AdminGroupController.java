@@ -8,16 +8,19 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin/groups")
 @PreAuthorize("hasRole('ADMIN')") // 需要安全框架的支持，例如Spring Security
+// 该注解会检查用户的角色，需要将角色信息设置到 Spring Security 的上下文（Context）中。
 public class AdminGroupController {
+    private final GroupService groupService;
 
     @Autowired
-    private GroupService groupService;
+    public AdminGroupController(GroupService groupService) {
+        this.groupService = groupService;
+    }
 
     @GetMapping
     public ResponseEntity<List<GroupDTO>> getAllGroups() {

@@ -15,8 +15,12 @@ import java.util.List;
 @PreAuthorize("hasRole('ADMIN')") // 需要安全框架的支持，例如Spring Security
 public class AdminWeeklyReportController {
 
+    private final WeeklyReportService weeklyReportService;
+
     @Autowired
-    private WeeklyReportService weeklyReportService;
+    public AdminWeeklyReportController(WeeklyReportService weeklyReportService) {
+        this.weeklyReportService = weeklyReportService;
+    }
 
     @GetMapping
     public ResponseEntity<List<WeeklyReportDTO>> getAllWeeklyReports() {

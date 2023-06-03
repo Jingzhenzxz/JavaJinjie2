@@ -1,37 +1,96 @@
 package com.wuan.attendance.utils;
 
+import com.wuan.attendance.dto.UserDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
 
-// 用来生成和解析JWT（JSON Web Token）
+@Slf4j
+@Service
 public class JwtUtil {
-    private static final String SECRET_KEY = "yourSecretKey";
 
-    public static String generateToken(Integer userId) { // 根据提供的用户ID生成一个JWT
-        return Jwts.builder() // 使用Jwts.builder()来创建一个新的JWT构建器
-                // 使用setSubject方法设置JWT的主题（这是JWT的核心部分，通常包含主要的验证声明，例如用户ID）
-                .setSubject(userId.toString())
-                // 使用setIssuedAt方法设置JWT的发行日期
-                .setIssuedAt(new Date())
-                // 使用signWith方法对JWT进行签名，签名算法是HS256，签名密钥是SECRET_KEY
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
-                // 使用compact方法生成JWT
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+
+    @Value("${jwt.expiration}")
+    private long jwtExpiration;
+
+    private SecretKey getSecretKey() { // 从配置的密钥字符串生成一个SecretKey对象，用于签名和验证JWT。
+        // 这个SecretKey对象是对称的，即同一个密钥既用于签名JWT也用于验证JWT。
+        return Keys.hmacShaKeyFor(jwtSecret.getBytes());
+    }
+
+    public String generateToken(UserDTO userDTO) {
+        log.info("调用generateToken方法");
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + jwtExpiration);
+
+        return Jwts.builder()
+                .setSubject(userDTO.getId().toString())
+                .claim("email", userDTO.getEmail())
+                .claim("role", userDTO.getUserRole().toString())  // 添加一个名为 "role" 的声明，值是用户的角色
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(getSecretKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
 
-    public static Integer getUserIdFromToken(String token) { // 从给定的JWT中提取用户ID
-        // 使用Jwts.parser()来创建一个新的JWT解析器
-        Claims claims = Jwts.parser()
+
+    public String getEmailFromJwt(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSecretKey())
+                .build()
+                .parseClaimsJws(token)
+                // 返回一个Claims对象。然后，它从这个Claims对象中获取并返回主题，即电子邮件地址。
+                .getBody();
+
+        return claims.get("email", String.class);
+    }
+
+    public String getRoleFromJwt(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSecretKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.get("role", String.class);
+    }
+
+    public Integer getUserIdFromJwt(String token) { // 从给定的JWT中提取用户ID
+        // 使用Jwts.parserBuilder()来创建一个新的JWT解析器
+        Claims claims = Jwts.parserBuilder()
                 // 使用setSigningKey方法设置解析器的签名密钥
-                .setSigningKey(SECRET_KEY)
+                .setSigningKey(getSecretKey())
                 // 使用parseClaimsJws方法解析JWT
+                .build()
                 .parseClaimsJws(token)
                 // 获取 JWT 的全部有效负载
                 .getBody();
-        return Integer.parseInt(claims.getSubject()); // 将主体部分（也就是用户ID）转换为整数，并返回
-        // getSubject() 是用来获取 JWT 有效负载中的一个特定声明，即主体部分
+
+        return Integer.parseInt(claims.getSubject());
+        // 将主体部分（也就是用户ID）转换为整数，并返回。
+        // getSubject() 是用来获取 JWT 有效负载中的一个特定声明，即主体部分。
+    }
+
+    // 验证一个JWT。它试图解析这个JWT，如果可以成功解析（即JWT格式正确、签名正确且未过期），
+    // 那么返回true。如果在解析过程中出现任何异常，那么返回false。
+    public boolean validateToken(String authToken) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(getSecretKey())
+                    .build()
+                    .parseClaimsJws(authToken);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

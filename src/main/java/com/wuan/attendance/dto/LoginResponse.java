@@ -2,11 +2,11 @@ package com.wuan.attendance.dto;
 
 public class LoginResponse {
     private String token;
-    private UserDTO user;
+    private UserDTO userDTO;
 
-    public LoginResponse(UserDTO user, String token) {
+    public LoginResponse(UserDTO userDTO, String token) {
         this.token = token;
-        this.user = user;
+        this.userDTO = userDTO;
     }
 
     public String getToken() {
@@ -18,10 +18,10 @@ public class LoginResponse {
     }
 
     public UserDTO getUser() {
-        return user;
+        return userDTO;
     }
 
-    public void setUser(UserDTO user) {
-        this.user = user;
+    public void setUser(UserDTO userDTO) {
+        this.userDTO = userDTO;
     }
 }

@@ -38,14 +38,11 @@ CREATE TABLE `user` (
   `email` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
   `qq` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
   `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
-  `group_id` int DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `userRole` varchar(10) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'USER',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`),
-  KEY `fk_user_group` (`group_id`),
-  CONSTRAINT `fk_user_group` FOREIGN KEY (`group_id`) REFERENCES `group` (`id`)
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 
 -- 创建周报表
@@ -66,9 +63,20 @@ CREATE TABLE `weekly_report` (
   CONSTRAINT `fk_weekly_report_group` FOREIGN KEY (`group_id`) REFERENCES `group` (`id`),
   CONSTRAINT `fk_weekly_report_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
+--- 创建用户和群组之间的关系表
+CREATE TABLE `user_group` (
+  `user_id` int NOT NULL,
+  `group_id` int NOT NULL,
+  PRIMARY KEY (`user_id`,`group_id`),
+  KEY `fk_user_group_user` (`user_id`),
+  KEY `fk_user_group_group` (`group_id`),
+  CONSTRAINT `fk_user_group_group` FOREIGN KEY (`group_id`) REFERENCES `group` (`id`),
+  CONSTRAINT `fk_user_group_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 ```
 ## 下载并运行项目
-下载不用说了。把application.properties文件中
+下载不用说了。 把application.properties文件中
 ```properties
 spring.datasource.password=yourpassword
 ```
@@ -81,11 +89,24 @@ spring.datasource.password=yourpassword
 ```json
 {
   "username": "test",
-  "password": "test",
   "email": "test@example.com",
   "qq": "12345678",
+  "password": "test",
   "confirmPassword": "test"
 }
 ```
 
-然后点击 "Send" 按钮。
+然后点击 "Send" 按钮。注意，一定要记住密码，数据库里存的不是明文！
+
+## 使用 Postman 模拟登录请求
+
+在请求类型中选择 POST，然后在请求 URL 输入框中输入 http://localhost:8086/attendance/api/authentication/login，在 Headers 中添加一个
+”Content-Type“，值为”application/json“，并在 "Body" 部分输入你的登录信息，格式为 JSON，例如：
+
+```json
+{
+  "email": "test@example.com",
+  "password": "test"
+}
+```
+然后点击 "Send" 按钮，你会收到你的 token 和你的用户信息。

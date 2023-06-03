@@ -1,6 +1,5 @@
 package com.wuan.attendance.mapper;
 
-import com.wuan.attendance.model.Group;
 import com.wuan.attendance.model.User;
 import org.apache.ibatis.annotations.Mapper;
 

@@ -1,8 +1,6 @@
 package com.wuan.attendance.controller;
 
-import com.wuan.attendance.dto.GroupDTO;
 import com.wuan.attendance.dto.UserDTO;
-import com.wuan.attendance.service.UserGroupService;
 import com.wuan.attendance.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -18,13 +15,11 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
     private final HttpServletRequest request;
-    private final UserGroupService userGroupService;
 
     @Autowired
-    public UserController(UserService userService, HttpServletRequest request, UserGroupService userGroupService) {
+    public UserController(UserService userService, HttpServletRequest request) {
         this.userService = userService;
         this.request = request;
-        this.userGroupService = userGroupService;
     }
 
     @GetMapping

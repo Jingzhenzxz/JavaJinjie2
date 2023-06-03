@@ -14,8 +14,12 @@ import java.util.List;
 @RequestMapping("/api/user/weekly-reports")
 public class WeeklyReportController {
 
+    private final WeeklyReportService weeklyReportService;
+
     @Autowired
-    private WeeklyReportService weeklyReportService;
+    public WeeklyReportController(WeeklyReportService weeklyReportService) {
+        this.weeklyReportService = weeklyReportService;
+    }
 
     @GetMapping
     public ResponseEntity<Object> getWeeklyReportsByUserId(HttpServletRequest request) {

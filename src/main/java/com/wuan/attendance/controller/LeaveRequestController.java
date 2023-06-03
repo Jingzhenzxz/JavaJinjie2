@@ -12,10 +12,14 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/api/user/leave-requests")
 public class LeaveRequestController {
+    private final LeaveRequestService leaveRequestService;
+    private final HttpServletRequest httpServletRequest;
 
     @Autowired
-    private LeaveRequestService leaveRequestService;
-    private HttpServletRequest httpServletRequest;
+    public LeaveRequestController(LeaveRequestService leaveRequestService, HttpServletRequest httpServletRequest) {
+        this.leaveRequestService = leaveRequestService;
+        this.httpServletRequest = httpServletRequest;
+    }
 
     @GetMapping
     public ResponseEntity<Object> getMyLeaveRequest() {
@@ -34,7 +38,7 @@ public class LeaveRequestController {
         if (updated) {
             return ResponseEntity.ok(leaveRequestDTO);
         } else {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Update leave request failed");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Update leave request failed");
         }
     }
 
@@ -49,7 +53,7 @@ public class LeaveRequestController {
         if (deleted) {
             return ResponseEntity.ok("Delete leave request successfully");
         } else {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Delete leave request failed");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Delete leave request failed");
         }
     }
 

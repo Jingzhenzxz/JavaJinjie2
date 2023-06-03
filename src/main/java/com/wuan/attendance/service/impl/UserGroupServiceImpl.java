@@ -90,7 +90,13 @@ public class UserGroupServiceImpl implements UserGroupService {
         user.setEmail(userDTO.getEmail());
         user.setQQ(userDTO.getQQ());
         user.setPassword(userDTO.getPassword());
-        user.setGroups(userDTO.getGroups().stream().map(this::convertGroupDTOToGroupModel).collect(Collectors.toList()));
+
+        List<Integer> groupIds = userGroupMapper.getAllGroupIdsByUserId(userDTO.getId());
+        List<Group> groups = new ArrayList<>();
+        for (Integer groupId : groupIds) {
+            groups.add(groupMapper.findById(groupId));
+        }
+        user.setGroups(groups);
         user.setCreatedAt(userDTO.getCreatedAt());
         user.setUpdatedAt(userDTO.getUpdatedAt());
         return user;
