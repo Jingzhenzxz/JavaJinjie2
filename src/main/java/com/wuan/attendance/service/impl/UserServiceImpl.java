@@ -92,14 +92,14 @@ public class UserServiceImpl implements UserService {
 
         for (GroupDTO originalGroup : originalGroups) {
             if (!updatedGroupMap.containsKey(originalGroup.getId())) {
-                // 如果原来的群组在更新的群组列表中不存在，删除该关系
+                // 如果原来的群组在新的群组列表中不存在，则删除该关系
                 userGroupService.deleteGroupOfUser(userId, originalGroup.getId());
             }
         }
 
         for (GroupDTO updatedGroup : newGroups) {
             if (!originalGroups.contains(updatedGroup)) {
-                // 如果更新的群组在原来的群组列表中不存在，添加新的关系
+                // 如果新的群组在原来的群组列表中不存在，添加新的关系
                 userGroupService.insertUserGroupRelation(userId, updatedGroup.getId());
             }
         }
