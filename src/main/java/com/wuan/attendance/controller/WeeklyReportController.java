@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -22,22 +23,19 @@ public class WeeklyReportController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> getWeeklyReportsByUserId(HttpServletRequest request) {
-        // 从远程调用中获取 userId
-        Integer userId = (Integer) request.getAttribute("userId");
-        if (userId == null) {
+    public ResponseEntity<Object> getMyWeeklyReports(HttpServletRequest request, Principal principal) {
+        if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
         }
 
+        Integer userId = Integer.valueOf(principal.getName());
         List<WeeklyReportDTO> weeklyReports = weeklyReportService.findByUserId(userId);
         return ResponseEntity.ok(weeklyReports);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Object> createWeeklyReport(@RequestBody WeeklyReportDTO weeklyReportDTO, HttpServletRequest request) {
-        // 从请求中获取 userId
-        Integer userId = (Integer) request.getAttribute("userId");
-        if (userId == null) {
+    public ResponseEntity<Object> createMyWeeklyReport(@RequestBody WeeklyReportDTO weeklyReportDTO, HttpServletRequest request, Principal principal) {
+        if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
         }
 
@@ -50,13 +48,12 @@ public class WeeklyReportController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<String> updateWeeklyReport(@RequestBody WeeklyReportDTO weeklyReportDTO, HttpServletRequest request) {
-        // 从请求中获取 userId
-        Integer userId = (Integer) request.getAttribute("userId");
-        if (userId == null) {
+    public ResponseEntity<String> updateMyWeeklyReport(@RequestBody WeeklyReportDTO weeklyReportDTO, HttpServletRequest request, Principal principal) {
+        if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
         }
 
+        Integer userId = Integer.valueOf(principal.getName());
         // 检查周报是否存在
         WeeklyReportDTO existingWeeklyReport = weeklyReportService.findById(userId);
         if (existingWeeklyReport == null) {
@@ -72,13 +69,12 @@ public class WeeklyReportController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteWeeklyReport(HttpServletRequest request) {
-        // 从请求中获取 userId
-        Integer userId = (Integer) request.getAttribute("userId");
-        if (userId == null) {
+    public ResponseEntity<String> deleteMyWeeklyReport(HttpServletRequest request, Principal principal) {
+        if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
         }
 
+        Integer userId = Integer.valueOf(principal.getName());
         // 从请求中获取要删除的周报的周数
         Integer weekNumber = (Integer) request.getAttribute("weekNumber");
         // 删除周报

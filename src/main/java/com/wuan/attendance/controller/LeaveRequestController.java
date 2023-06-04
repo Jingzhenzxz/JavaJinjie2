@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/user/leave-requests")
@@ -22,18 +23,22 @@ public class LeaveRequestController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> getMyLeaveRequest() {
-        Integer userId = (Integer) httpServletRequest.getAttribute("userId");
-        if (userId == null) {
+    public ResponseEntity<Object> getMyLeaveRequest(Principal principal) {
+        if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
         }
 
+        Integer userId = Integer.valueOf(principal.getName());
         LeaveRequestDTO leaveRequest = leaveRequestService.findById(userId);
         return ResponseEntity.ok(leaveRequest);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Object> updateMyLeaveRequest(@RequestBody LeaveRequestDTO leaveRequestDTO) {
+    public ResponseEntity<Object> updateMyLeaveRequest(@RequestBody LeaveRequestDTO leaveRequestDTO, Principal principal) {
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
+        }
+
         boolean updated = leaveRequestService.update(leaveRequestDTO);
         if (updated) {
             return ResponseEntity.ok(leaveRequestDTO);
@@ -43,12 +48,12 @@ public class LeaveRequestController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteMyLeaveRequest() {
-        Integer userId = (Integer) httpServletRequest.getAttribute("userId");
-        if (userId == null) {
+    public ResponseEntity<String> deleteMyLeaveRequest(Principal principal) {
+        if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
         }
 
+        Integer userId = Integer.valueOf(principal.getName());
         boolean deleted = leaveRequestService.delete(userId);
         if (deleted) {
             return ResponseEntity.ok("Delete leave request successfully");

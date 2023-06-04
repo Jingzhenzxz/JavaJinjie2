@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.Map;
 
 @RestController
@@ -23,20 +24,20 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> getMyAccountById() {
-        Integer userId = (Integer) request.getAttribute("userId");
-        if (userId == null) {
+    public ResponseEntity<Object> getMyAccountById(Principal principal) {
+        // 从 Principal 中获取用户 ID
+        if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
         }
+        Integer userId = Integer.valueOf(principal.getName());
 
         UserDTO me = userService.findById(userId);
         return ResponseEntity.ok(me);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Object> updateMyAccount(@RequestBody UserDTO userDTO) {
-        Integer userId = (Integer) request.getAttribute("userId");
-        if (userId == null) {
+    public ResponseEntity<Object> updateMyAccount(@RequestBody UserDTO userDTO, Principal principal) {
+        if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
         }
 
@@ -49,11 +50,11 @@ public class UserController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteMyAccount() {
-        Integer userId = (Integer) request.getAttribute("userId");
-        if (userId == null) {
+    public ResponseEntity<String> deleteMyAccount(Principal principal) {
+        if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
         }
+        Integer userId = Integer.valueOf(principal.getName());
 
         boolean userIsDeleted = userService.delete(userId);
 
@@ -65,11 +66,11 @@ public class UserController {
     }
 
     @PutMapping("/change-password")
-    public ResponseEntity<String> changeMyPassword(@RequestBody Map<String, String> passwordData) {
-        Integer userId = (Integer) request.getAttribute("userId");
-        if (userId == null) {
+    public ResponseEntity<String> changeMyPassword(@RequestBody Map<String, String> passwordData, Principal principal) {
+        if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
         }
+        Integer userId = Integer.valueOf(principal.getName());
 
         UserDTO user = userService.findById(userId);
         String newPassword = passwordData.get("newPassword");

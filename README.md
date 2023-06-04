@@ -98,9 +98,11 @@ spring.datasource.password=yourpassword
 
 然后点击 "Send" 按钮。注意，一定要记住密码，数据库里存的不是明文！
 
-## 使用 Postman 模拟登录请求
+如果你想创建一个管理员，你可以先通过上述方法创建一个普通的管理员，再在数据库中把该用户的权限改成ADMIN。
 
-在请求类型中选择 POST，然后在请求 URL 输入框中输入 http://localhost:8086/attendance/api/authentication/login，在 Headers 中添加一个
+## 使用 Postman 模拟用户登录请求
+
+在请求类型中选择 POST，然后在请求 URL 输入框中输入 http://localhost:8086/attendance/api/authentication/login ，在 Headers 中添加一个
 ”Content-Type“，值为”application/json“，并在 "Body" 部分输入你的登录信息，格式为 JSON，例如：
 
 ```json
@@ -109,4 +111,19 @@ spring.datasource.password=yourpassword
   "password": "test"
 }
 ```
+
 然后点击 "Send" 按钮，你会收到你的 token 和你的用户信息。
+
+## 使用 Postman 模拟管理员的 GET 请求
+
+在请求类型中选择 GET，然后在请求 URL 输入框中输入 http://localhost:8086/attendance/api/admin/users ，在 Authentication 选项中
+选择 Bearer Token，然后输入管理员登录时收到的 token，接着点击 "Send" 按钮就可以了。
+
+![img.png](img.png)
+
+## 使用 Postman 模拟普通用户的 GET 请求
+
+在请求类型中选择 GET，然后在请求 URL 输入框中输入 http://localhost:8086/attendance/api/user ，在 Authentication 选项中
+选择 Bearer Token，然后输入普通用户登录时收到的 token，接着点击 "Send" 按钮就可以该用户自己的信息了。注意，该用户无法查看其他人的信息！
+
+![img.png](img.png)
