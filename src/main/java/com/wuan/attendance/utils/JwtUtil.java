@@ -22,13 +22,13 @@ public class JwtUtil {
     @Value("${jwt.expiration}")
     private long jwtExpiration;
 
-    private SecretKey getSecretKey() { // 从配置的密钥字符串生成一个SecretKey对象，用于签名和验证JWT。
+    private SecretKey getSecretKey() {
+        // 从配置的密钥字符串生成一个SecretKey对象，用于签名和验证JWT。
         // 这个SecretKey对象是对称的，即同一个密钥既用于签名JWT也用于验证JWT。
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
     }
 
     public String generateToken(UserDTO userDTO) {
-        log.info("调用generateToken方法");
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpiration);
 
@@ -43,7 +43,9 @@ public class JwtUtil {
     }
 
 
-    public String getEmailFromJwt(String token) {
+    public String getEmailFromJwt(String authHeader) {
+        // 把 Authentication 字段的值中的“Bearer ”去掉。
+        String token = authHeader.replace("Bearer ", "");
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getSecretKey())
                 .build()
@@ -54,7 +56,8 @@ public class JwtUtil {
         return claims.get("email", String.class);
     }
 
-    public String getRoleFromJwt(String token) {
+    public String getRoleFromJwt(String authHeader) {
+        String token = authHeader.replace("Bearer ", "");
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(getSecretKey())
                 .build()
@@ -64,8 +67,11 @@ public class JwtUtil {
         return claims.get("role", String.class);
     }
 
-    public Integer getUserIdFromJwt(String token) { // 从给定的JWT中提取用户ID
+    public Integer getUserIdFromJwt(String authHeader) {
+        // 从给定的JWT中提取用户ID
         // 使用Jwts.parserBuilder()来创建一个新的JWT解析器
+
+        String token = authHeader.replace("Bearer ", "");
         Claims claims = Jwts.parserBuilder()
                 // 使用setSigningKey方法设置解析器的签名密钥
                 .setSigningKey(getSecretKey())
@@ -82,8 +88,10 @@ public class JwtUtil {
 
     // 验证一个JWT。它试图解析这个JWT，如果可以成功解析（即JWT格式正确、签名正确且未过期），
     // 那么返回true。如果在解析过程中出现任何异常，那么返回false。
-    public boolean validateToken(String authToken) {
+    public boolean validateToken(String authHeader) {
         try {
+            // 把 Authentication 字段的值中的“Bearer ”去掉。
+            String authToken = authHeader.replace("Bearer ", "");
             Jwts.parserBuilder()
                     .setSigningKey(getSecretKey())
                     .build()

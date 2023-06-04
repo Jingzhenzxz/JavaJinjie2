@@ -44,17 +44,14 @@ public class JwtFilter extends GenericFilterBean {
         // 从请求中获取 JWT
         String authToken = getAuthToken(httpRequest);
         if (authToken != null && jwtUtil.validateToken(authToken)) {
-            log.debug("Auth token is valid");
             // 从 JWT 中获取用户信息
             Integer userId = jwtUtil.getUserIdFromJwt(authToken);
             String role = jwtUtil.getRoleFromJwt(authToken);
-            log.debug("Got user ID and role from JWT: {} {}", userId, role);
 
             // 创建一个认证令牌（Authentication Token），并将其设置到 Spring Security 的上下文中
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(userId, null, Collections.singleton(new SimpleGrantedAuthority("ROLE_" + role)));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            log.debug("Set authentication to security context");
         }
 
         // 将请求和响应传递给过滤器链的下一个元素
