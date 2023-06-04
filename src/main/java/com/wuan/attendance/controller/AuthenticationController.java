@@ -17,13 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/authentication")
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
-    private final UserService userService;
 
     @Autowired
-    public AuthenticationController(AuthenticationService authenticationService, UserService userService) {
+    public AuthenticationController(AuthenticationService authenticationService) {
         log.debug("注入authenticationService和userService");
         this.authenticationService = authenticationService;
-        this.userService = userService;
     }
 
     @PostMapping("/register")
@@ -34,8 +32,6 @@ public class AuthenticationController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         log.debug("能访问登录api");
-        String email = loginRequest.getEmail();
-        String password = loginRequest.getPassword();
-        return authenticationService.login(email, password);
+        return authenticationService.login(loginRequest.getEmail(), loginRequest.getPassword());
     }
 }

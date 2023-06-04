@@ -27,6 +27,13 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.yaml</groupId>
+                    <artifactId>snakeyaml</artifactId>
+<!--                    snakeyaml 有漏洞，要把它排除。-->
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

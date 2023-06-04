@@ -26,14 +26,12 @@ public class JwtFilter extends GenericFilterBean {
 
     @Autowired
     public JwtFilter(JwtUtil jwtUtil) {
-        log.debug("JwtFilter的构造函数，注入jwtUtil");
         this.jwtUtil = jwtUtil;
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        log.debug("进入doFilter方法");
         HttpServletRequest httpRequest = (HttpServletRequest) request;
 
         String requestURI = httpRequest.getRequestURI();
@@ -45,8 +43,6 @@ public class JwtFilter extends GenericFilterBean {
 
         // 从请求中获取 JWT
         String authToken = getAuthToken(httpRequest);
-        log.debug("Got auth token from request: {}", authToken);
-
         if (authToken != null && jwtUtil.validateToken(authToken)) {
             log.debug("Auth token is valid");
             // 从 JWT 中获取用户信息
