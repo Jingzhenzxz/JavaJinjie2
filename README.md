@@ -125,5 +125,3 @@ spring.datasource.password=yourpassword
 
 在请求类型中选择 GET，然后在请求 URL 输入框中输入 http://localhost:8086/attendance/api/user ，在 Authentication 选项中
 选择 Bearer Token，然后输入普通用户登录时收到的 token，接着点击 "Send" 按钮就可以该用户自己的信息了。注意，该用户无法查看其他人的信息！
-
-![img.png](img.png)
