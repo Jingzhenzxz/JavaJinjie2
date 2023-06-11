@@ -1,6 +1,7 @@
 package com.wuan.attendance.controller;
 
 import com.wuan.attendance.dto.GroupDTO;
+import com.wuan.attendance.model.Group;
 import com.wuan.attendance.service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,19 +23,19 @@ public class AdminGroupController {
         this.groupService = groupService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<GroupDTO>> getAllGroups() {
         List<GroupDTO> groups = groupService.findAll();
         return ResponseEntity.ok(groups);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getGroupById(@PathVariable Integer id) {
-        if (id == null) {
+    @GetMapping("/{name}")
+    public ResponseEntity<Object> getGroupByName(@PathVariable String name) {
+        if (name == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("未指定群组");
         }
 
-        GroupDTO groupDTO = groupService.findById(id);
+        GroupDTO groupDTO = groupService.findByName(name);
         return ResponseEntity.ok(groupDTO);
     }
 
@@ -53,9 +54,9 @@ public class AdminGroupController {
         }
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<Object> updateGroup(@PathVariable Integer id, @RequestBody GroupDTO groupDTO) {
-        if (id == null) {
+    @PutMapping("/update/{name}")
+    public ResponseEntity<Object> updateGroup(@PathVariable String name, @RequestBody GroupDTO groupDTO) {
+        if (name == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("未指定要更新的群组");
         }
 
@@ -67,19 +68,25 @@ public class AdminGroupController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Object> deleteGroup(@PathVariable Integer id) {
-        if (id == null) {
+    @DeleteMapping("/delete/{name}")
+    public ResponseEntity<Object> deleteGroup(@PathVariable String name) {
+        if (name == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Id is not provided");
         }
 
-        if (groupService.findById(id) == null) {
+        if (groupService.findByName(name) == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Group does not exist");
         }
 
-        boolean deleted = groupService.delete(id);
+        GroupDTO groupDTO = groupService.findByName(name);
+        if (groupDTO == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("未找到该群组");
+        }
+
+        Integer groupId = groupDTO.getId();
+        boolean deleted = groupService.delete(groupId);
         if (deleted) {
-            return ResponseEntity.ok("Delete group successfully");
+            return ResponseEntity.ok("Delete group successful");
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Delete group failed");
         }

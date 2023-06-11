@@ -11,6 +11,10 @@ public interface WeeklyReportService {
 
     List<WeeklyReportDTO> findByUserId(Integer userId);
 
+    List<WeeklyReportDTO> findByUserEmail(String email);
+
+    WeeklyReportDTO findByUserEmailAndWeekNumber(String email, Integer weekNumber);
+
     boolean create(WeeklyReportDTO weeklyReportDTO);
 
     boolean update(WeeklyReportDTO weeklyReportDTO);

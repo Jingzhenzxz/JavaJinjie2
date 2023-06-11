@@ -16,6 +16,10 @@
         SELECT * FROM `group` WHERE id = #{id};
     </select>
 
+    <select id="findByName" resultMap="groupResultMap" parameterType="string">
+        SELECT * FROM `group` WHERE name = #{name};
+    </select>
+
     <insert id="insert" parameterType="com.wuan.attendance.model.Group">
         INSERT INTO `group` (name)
         VALUES (#{name});

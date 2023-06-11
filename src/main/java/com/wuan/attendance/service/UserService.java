@@ -18,7 +18,7 @@ public interface UserService {
 
     boolean update(UserDTO userDTO);
 
-    boolean delete(Integer id);
+    boolean deleteById(Integer userId);
 
     boolean changePassword(UserDTO userDTO, String newPassword);
 }

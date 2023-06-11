@@ -21,6 +21,10 @@
         SELECT * FROM leave_request WHERE id = #{id};
     </select>
 
+    <select id="findByUserId" resultMap="leaveRequestResultMap" parameterType="int">
+        SELECT * FROM leave_request WHERE user_id = #{userId};
+    </select>
+
     <select id="findByUserIdAndWeekNumber" resultMap="leaveRequestResultMap" parameterType="com.wuan.attendance.model.LeaveRequestKey">
         SELECT * FROM leave_request WHERE user_id = #{userId} AND week_number = #{weekNumber};
     </select>
@@ -46,7 +50,7 @@
         WHERE id = #{id};
     </update>
 
-    <delete id="delete" parameterType="int">
-        DELETE FROM leave_request WHERE id = #{id};
+    <delete id="deleteByUserIdAndWeekNumber" parameterType="com.wuan.attendance.model.LeaveRequest">
+        DELETE FROM leave_request WHERE user_id = #{userId} AND week_number = #{weekNumber};
     </delete>
 </mapper>

@@ -28,7 +28,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public ResponseEntity<?> login(String email, String password) {
-        log.debug("调用login方法");
         UserDTO userDTO = userService.findByEmail(email);
 
         if (userDTO == null) {

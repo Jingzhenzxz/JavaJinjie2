@@ -9,6 +9,8 @@ public interface GroupService {
 
     GroupDTO findById(Integer id);
 
+    GroupDTO findByName(String name);
+
     boolean insert(GroupDTO groupDTO);
 
     boolean update(GroupDTO groupDTO);

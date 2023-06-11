@@ -1,6 +1,9 @@
 package com.wuan.attendance.service.impl;
 
 import com.wuan.attendance.dto.WeeklyReportDTO;
+import com.wuan.attendance.exception.UserException;
+import com.wuan.attendance.exception.WeeklyReportException;
+import com.wuan.attendance.mapper.UserMapper;
 import com.wuan.attendance.mapper.WeeklyReportMapper;
 import com.wuan.attendance.model.WeeklyReport;
 import com.wuan.attendance.service.WeeklyReportService;
@@ -13,10 +16,12 @@ import java.util.stream.Collectors;
 @Service
 public class WeeklyReportServiceImpl implements WeeklyReportService {
     private final WeeklyReportMapper weeklyReportMapper;
+    private final UserMapper userMapper;
 
     @Autowired
-    public WeeklyReportServiceImpl(WeeklyReportMapper weeklyReportMapper) {
+    public WeeklyReportServiceImpl(WeeklyReportMapper weeklyReportMapper, UserMapper userMapper) {
         this.weeklyReportMapper = weeklyReportMapper;
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -31,7 +36,25 @@ public class WeeklyReportServiceImpl implements WeeklyReportService {
 
     @Override
     public List<WeeklyReportDTO> findByUserId(Integer userId) {
+        if (userId == null) {
+            throw new UserException("找不到该用户：userId为空！");
+        }
         return weeklyReportMapper.findByUserId(userId).stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    public List<WeeklyReportDTO> findByUserEmail(String email) {
+        Integer userId = userMapper.findByEmail(email).getId();
+        return findByUserId(userId);
+    }
+
+    public WeeklyReportDTO findByUserEmailAndWeekNumber(String email, Integer weekNumber) {
+        List<WeeklyReportDTO> weeklyReportDTOs = findByUserEmail(email);
+        for (WeeklyReportDTO weeklyReportDTO : weeklyReportDTOs) {
+            if (weeklyReportDTO.getWeekNumber().equals(weekNumber)) {
+                return weeklyReportDTO;
+            }
+        }
+        return null;
     }
 
     @Override

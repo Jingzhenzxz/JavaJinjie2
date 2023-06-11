@@ -9,11 +9,17 @@ public interface LeaveRequestService {
 
     LeaveRequestDTO findById(Integer id);
 
+    List<LeaveRequestDTO> findByUserId(Integer userId);
+
     LeaveRequestDTO findByUserIdAndWeekNumber(Integer userId, Integer weekNumber);
 
-    boolean insert(LeaveRequestDTO leaveRequestDTO);
+    LeaveRequestDTO findByUserEmailAndWeekNumber(String email, Integer weekNumber);
+
+    boolean create(LeaveRequestDTO leaveRequestDTO);
 
     boolean update(LeaveRequestDTO leaveRequestDTO);
 
-    boolean delete(Integer id);
+    boolean deleteByUserIdAndWeekNumber(Integer id, Integer weekNumber);
+
+    boolean deleteByEmailAndWeekNumber(String email, Integer weekNumber);
 }

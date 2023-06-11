@@ -10,7 +10,9 @@ public interface GroupMapper {
     List<Group> findAll();
 
     Group findById(Integer id);
-    
+
+    Group findByName(String name);
+
     int insert(Group group);
 
     int update(Group group);

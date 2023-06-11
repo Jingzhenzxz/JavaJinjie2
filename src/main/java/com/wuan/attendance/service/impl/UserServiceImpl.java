@@ -107,16 +107,15 @@ public class UserServiceImpl implements UserService {
         return userMapper.update(convertUserDTOToUserModel(userDTO)) > 0;
     }
 
-
     @Override
-    public boolean delete(Integer id) {
-        List<GroupDTO> groupsOfUser = userGroupService.getAllGroupsByUserId(id);
+    public boolean deleteById(Integer userId) {
+        List<GroupDTO> groupsOfUser = userGroupService.getAllGroupsByUserId(userId);
         boolean allGroupsOfUserAreDeleted = true;
         for (GroupDTO group : groupsOfUser) {
-            boolean groupOfUserIsDeleted = userGroupService.deleteGroupOfUser(id, group.getId());
+            boolean groupOfUserIsDeleted = userGroupService.deleteGroupOfUser(userId, group.getId());
             allGroupsOfUserAreDeleted = groupOfUserIsDeleted && allGroupsOfUserAreDeleted;
         }
-        return userMapper.delete(id) > 0 && allGroupsOfUserAreDeleted;
+        return userMapper.delete(userId) > 0 && allGroupsOfUserAreDeleted;
     }
 
     @Override

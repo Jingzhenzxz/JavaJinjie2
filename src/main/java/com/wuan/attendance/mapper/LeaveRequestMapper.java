@@ -11,11 +11,13 @@ public interface LeaveRequestMapper {
 
     LeaveRequest findById(Integer id);
 
+    List<LeaveRequest> findByUserId(Integer userId);
+
     LeaveRequest findByUserIdAndWeekNumber(Integer userId, Integer weekNumber);
 
     int insert(LeaveRequest leaveRequest);
 
     int update(LeaveRequest leaveRequest);
 
-    int delete(Integer id);
+    int deleteByUserIdAndWeekNumber(Integer id, Integer weekNumber);
 }

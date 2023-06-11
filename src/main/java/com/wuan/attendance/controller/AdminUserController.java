@@ -25,27 +25,31 @@ public class AdminUserController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
-        log.info("getAllUsers");
         List<UserDTO> users = userService.findAll();
         return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<Object> getUserById(@PathVariable Integer userId) {
-        if (userId == null) {
+    @GetMapping("/{email}")
+    public ResponseEntity<Object> getUserByEmail(@PathVariable String email) {
+        if (email == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("未指定要查询的用户ID");
         }
 
-        UserDTO user = userService.findById(userId);
+        UserDTO user = userService.findByEmail(email);
         return ResponseEntity.ok(user);
     }
 
     @PostMapping("/create")
     public ResponseEntity<Object> createUser(@RequestBody UserDTO userDTO) {
-        if (userDTO.getId() != null) {
-            throw new UserException("User already exists!");
+        if (userDTO.getEmail() == null || userDTO.getPassword() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email or password is missing");
+        }
+
+        UserDTO existingUser = userService.findByEmail(userDTO.getEmail());
+        if (existingUser != null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists");
         }
 
         boolean created = userService.insert(userDTO);
@@ -56,16 +60,17 @@ public class AdminUserController {
         }
     }
 
-    @PutMapping("/update/{userId}")
-    public ResponseEntity<Object> updateUserById(@PathVariable Integer userId, @RequestBody UserDTO userDTO) {
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("未指定要更新的用户的ID");
+    @PutMapping("/update/{email}")
+    public ResponseEntity<Object> updateUserById(@PathVariable String email, @RequestBody UserDTO userDTO) {
+        if (email == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email is missing");
         }
 
-        UserDTO existingUser = userService.findById(userId);
+        UserDTO existingUser = userService.findByEmail(email);
         if (existingUser == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User does not exist");
         } else {
+            userDTO.setId(existingUser.getId()); // Ensure the correct user ID
             boolean updated = userService.update(userDTO);
             if (updated) {
                 return ResponseEntity.ok(userDTO);
@@ -75,17 +80,18 @@ public class AdminUserController {
         }
     }
 
-    @DeleteMapping("/delete/{userId}")
-    public ResponseEntity<String> deleteUser(@PathVariable Integer userId) {
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("未指定要删除的用户的ID");
+    @DeleteMapping("/delete/{email}")
+    public ResponseEntity<String> deleteUser(@PathVariable String email) {
+        if (email == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email is missing");
         }
 
-        if (userService.findById(userId) == null) {
+        UserDTO user = userService.findByEmail(email);
+        if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User does not exist");
         }
 
-        boolean deleted = userService.delete(userId);
+        boolean deleted = userService.deleteById(user.getId());
         if (deleted) {
             return ResponseEntity.ok("User deleted successfully");
         } else {
@@ -93,18 +99,22 @@ public class AdminUserController {
         }
     }
 
-    @PutMapping("/change-password/{userId}")
-    public ResponseEntity<String> changePassword(@PathVariable Integer userId, @RequestBody Map<String, String> passwordData) {
-        if (userId == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("未指定要修改的用户的ID");
+    @PutMapping("/change-password/{email}")
+    public ResponseEntity<String> changePassword(@PathVariable String email, @RequestBody Map<String, String> passwordData) {
+        if (email == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email is missing");
         }
 
-        UserDTO user = userService.findById(userId);
+        UserDTO user = userService.findByEmail(email);
         if (user == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User does not exist");
         }
 
         String newPassword = passwordData.get("newPassword");
+        if (newPassword == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("New password is missing");
+        }
+
         boolean changed = userService.changePassword(user, newPassword);
         if (changed) {
             return ResponseEntity.ok("Change password successfully");

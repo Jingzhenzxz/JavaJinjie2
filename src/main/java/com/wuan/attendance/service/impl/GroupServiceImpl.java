@@ -35,6 +35,17 @@ public class GroupServiceImpl implements GroupService {
         if (group == null) {
             throw new GroupNotFoundException("Group not found with id: " + id);
         }
+
+        return convertToDTO(group);
+    }
+
+    @Override
+    public GroupDTO findByName(String name) {
+        Group group = groupMapper.findByName(name);
+        if (group == null) {
+            throw new GroupNotFoundException("Group not found with name: " + name);
+        }
+
         return convertToDTO(group);
     }
 

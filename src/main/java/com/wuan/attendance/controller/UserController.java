@@ -56,7 +56,7 @@ public class UserController {
         }
         Integer userId = Integer.valueOf(principal.getName());
 
-        boolean userIsDeleted = userService.delete(userId);
+        boolean userIsDeleted = userService.deleteById(userId);
 
         if (userIsDeleted) {
             return ResponseEntity.ok("Delete user successfully");

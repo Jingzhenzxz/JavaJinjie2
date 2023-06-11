@@ -1,6 +1,7 @@
 package com.wuan.attendance.controller;
 
 import com.wuan.attendance.dto.WeeklyReportDTO;
+import com.wuan.attendance.dto.WeeklyReportUpdateRequest;
 import com.wuan.attendance.service.WeeklyReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,36 +23,63 @@ public class AdminWeeklyReportController {
         this.weeklyReportService = weeklyReportService;
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<WeeklyReportDTO>> getAllWeeklyReports() {
         List<WeeklyReportDTO> weeklyReports = weeklyReportService.findAll();
         return ResponseEntity.ok(weeklyReports);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Object> getWeeklyReport(@PathVariable Integer id) {
-        if (id == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("未指定要获取的周报的ID");
+    @GetMapping("/{email}")
+    public ResponseEntity<Object> getWeeklyReport(@PathVariable String email) {
+        if (email == null || email.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email is missing");
         }
 
-        if (weeklyReportService.findById(id) == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Weekly report does not exist");
+        List<WeeklyReportDTO> weeklyReports = weeklyReportService.findByUserEmail(email);
+        if (weeklyReports.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No weekly report found for the provided email");
         }
 
-        WeeklyReportDTO weeklyReport = weeklyReportService.findById(id);
-        return ResponseEntity.ok(weeklyReport);
+        return ResponseEntity.ok(weeklyReports);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<String> updateWeeklyReport(@PathVariable Integer id, @RequestBody WeeklyReportDTO weeklyReportDTO) {
-        // 在这个方法中，我们假设管理员可以直接通过id更新周报，而无需知道userId
+    @PostMapping("/create")
+    public ResponseEntity<String> createWeeklyReportForUser(@RequestBody WeeklyReportUpdateRequest createRequest) {
+        String email = createRequest.getEmail();
+        Integer weekNumber = createRequest.getWeekNumber();
+        WeeklyReportDTO weeklyReportDTO = createRequest.getWeeklyReport();
 
-        if (id == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("未指定要更新的周报的ID");
+        if (email == null || email.isEmpty() || weekNumber == null || weeklyReportDTO == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email, week number, or weekly report data is missing");
+        }
+
+        // Check if the weekly report already exists
+        WeeklyReportDTO existingWeeklyReport = weeklyReportService.findByUserEmailAndWeekNumber(email, weekNumber);
+        if (existingWeeklyReport != null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Weekly report already exists");
+        }
+
+        boolean created = weeklyReportService.create(weeklyReportDTO);
+        if (created) {
+            return ResponseEntity.ok("Create weekly report successful");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Create weekly report failed");
+        }
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<String> updateWeeklyReportForUser(@RequestBody WeeklyReportUpdateRequest updateRequest) {
+        String email = updateRequest.getEmail();
+        Integer weekNumber = updateRequest.getWeekNumber();
+        WeeklyReportDTO weeklyReportDTO = updateRequest.getWeeklyReport();
+
+        if (email == null || email.isEmpty() || weekNumber == null || weeklyReportDTO == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email, week number, or weekly report data is missing");
         }
 
         // 检查周报是否存在
-        if (weeklyReportService.findById(id) == null) {
+        WeeklyReportDTO existingWeeklyReport = weeklyReportService.findByUserEmailAndWeekNumber(email, weekNumber);
+        if (existingWeeklyReport == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Weekly report does not exist");
         }
 
@@ -63,23 +91,31 @@ public class AdminWeeklyReportController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteWeeklyReport(@PathVariable Integer id) {
-        // 在这个方法中，我们假设管理员可以直接通过id删除周报，而无需知道userId
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteOneWeeklyReportForUser(@RequestBody WeeklyReportUpdateRequest deleteRequest) {
+        String email = deleteRequest.getEmail();
+        Integer weekNumber = deleteRequest.getWeekNumber();
 
-        if (id == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("未指定要删除的周报的ID");
+        if (email == null || email.isEmpty() || weekNumber == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email or week number is missing");
         }
 
-        if (weeklyReportService.findById(id) == null) {
+        // 检查周报是否存在
+        WeeklyReportDTO existingWeeklyReport = weeklyReportService.findByUserEmailAndWeekNumber(email, weekNumber);
+        if (existingWeeklyReport == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Weekly report does not exist");
         }
 
-        boolean deleted = weeklyReportService.deleteById(id);
+        boolean deleted = weeklyReportService.deleteById(existingWeeklyReport.getId());
         if (deleted) {
             return ResponseEntity.ok("Delete weekly report successful");
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Delete weekly report failed");
         }
     }
+
+//    @ExceptionHandler(WeeklyReportException.class)
+//    public ResponseEntity<String> handleWeeklyReportException(WeeklyReportException e) {
+//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+//    }
 }

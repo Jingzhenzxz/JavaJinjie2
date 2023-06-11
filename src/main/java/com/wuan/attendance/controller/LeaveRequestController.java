@@ -30,37 +30,58 @@ public class LeaveRequestController {
 
         Integer userId = Integer.valueOf(principal.getName());
         LeaveRequestDTO leaveRequest = leaveRequestService.findById(userId);
+        if (leaveRequest == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Leave request does not exist");
+        }
+
         return ResponseEntity.ok(leaveRequest);
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<Object> updateMyLeaveRequest(@RequestBody LeaveRequestDTO leaveRequestDTO, Principal principal) {
+    @PostMapping("/create")
+    public ResponseEntity<Object> createMyLeaveRequest(@RequestBody LeaveRequestDTO leaveRequestDTO, HttpServletRequest request, Principal principal) {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
         }
 
-        boolean updated = leaveRequestService.update(leaveRequestDTO);
-        if (updated) {
-            return ResponseEntity.ok(leaveRequestDTO);
+        // Validate the request
+        if (leaveRequestDTO.getWeekNumber() == null || leaveRequestDTO.getReason() == null || leaveRequestDTO.getReason().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Week number or reason is missing");
+        }
+
+        boolean created = leaveRequestService.create(leaveRequestDTO);
+        if (created) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(leaveRequestDTO);
         } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Update leave request failed");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Create leave request failed");
         }
     }
-
-    @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteMyLeaveRequest(Principal principal) {
-        if (principal == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
-        }
-
-        Integer userId = Integer.valueOf(principal.getName());
-        boolean deleted = leaveRequestService.delete(userId);
-        if (deleted) {
-            return ResponseEntity.ok("Delete leave request successfully");
-        } else {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Delete leave request failed");
-        }
-    }
-
-
+    // 普通用户只能创建请假条，不能删除或修改。所以把下面的方法注释掉了。
+//    @PutMapping("/update")
+//    public ResponseEntity<Object> updateMyLeaveRequest(@RequestBody LeaveRequestDTO leaveRequestDTO, Principal principal) {
+//        if (principal == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
+//        }
+//
+//        boolean updated = leaveRequestService.update(leaveRequestDTO);
+//        if (updated) {
+//            return ResponseEntity.ok(leaveRequestDTO);
+//        } else {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Update leave request failed");
+//        }
+//    }
+//
+//    @DeleteMapping("/delete")
+//    public ResponseEntity<String> deleteMyLeaveRequest(@RequestParam Integer weekNumber, Principal principal) {
+//        if (principal == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
+//        }
+//
+//        Integer userId = Integer.valueOf(principal.getName());
+//        boolean deleted = leaveRequestService.deleteByUserIdAndWeekNumber(userId, weekNumber);
+//        if (deleted) {
+//            return ResponseEntity.ok("Delete leave request successfully");
+//        } else {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Delete leave request failed");
+//        }
+//    }
 }
