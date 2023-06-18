@@ -35,7 +35,7 @@ public class UserController {
         return ResponseEntity.ok(me);
     }
 
-    @PatchMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<Object> updateMyAccount(@RequestBody UserDTO userDTO, Principal principal) {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");

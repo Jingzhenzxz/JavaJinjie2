@@ -87,7 +87,7 @@ public class AdminLeaveRequestController {
         }
     }
 
-    @PatchMapping("/update")
+    @PutMapping("/update")
     public ResponseEntity<Object> updateLeaveRequestForUser(@RequestBody LeaveRequestUpdateRequest updateRequest) {
         String email = updateRequest.getEmail();
         Integer weekNumber = updateRequest.getWeekNumber();

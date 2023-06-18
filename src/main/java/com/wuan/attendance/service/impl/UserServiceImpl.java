@@ -2,6 +2,7 @@ package com.wuan.attendance.service.impl;
 
 import com.wuan.attendance.dto.GroupDTO;
 import com.wuan.attendance.dto.UserDTO;
+import com.wuan.attendance.exception.GroupException;
 import com.wuan.attendance.exception.UserException;
 import com.wuan.attendance.mapper.UserMapper;
 import com.wuan.attendance.model.Group;
@@ -84,6 +85,9 @@ public class UserServiceImpl implements UserService {
     public boolean update(UserDTO userDTO) {
         Integer userId = userDTO.getId();
         List<GroupDTO> newGroups = userDTO.getGroups();
+        if (newGroups == null) {
+            throw new GroupException("输入的群组信息为空！");
+        }
         // 该用户的原来的群组
         List<GroupDTO> originalGroups = userGroupService.getAllGroupsByUserId(userId);
         // 把它变成HashMap以便查找

@@ -60,7 +60,7 @@ public class AdminUserController {
         }
     }
 
-    @PatchMapping("/update/{email}")
+    @PutMapping("/update/{email}")
     public ResponseEntity<Object> updateUserById(@PathVariable String email, @RequestBody UserDTO userDTO) {
         if (email == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email is missing");
