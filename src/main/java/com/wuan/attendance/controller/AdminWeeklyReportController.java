@@ -67,7 +67,7 @@ public class AdminWeeklyReportController {
         }
     }
 
-    @PutMapping("/update")
+    @PatchMapping("/update")
     public ResponseEntity<String> updateWeeklyReportForUser(@RequestBody WeeklyReportUpdateRequest updateRequest) {
         String email = updateRequest.getEmail();
         Integer weekNumber = updateRequest.getWeekNumber();

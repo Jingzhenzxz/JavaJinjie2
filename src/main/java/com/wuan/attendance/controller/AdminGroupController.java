@@ -54,7 +54,7 @@ public class AdminGroupController {
         }
     }
 
-    @PutMapping("/update/{name}")
+    @PatchMapping("/update/{name}")
     public ResponseEntity<Object> updateGroup(@PathVariable String name, @RequestBody GroupDTO groupDTO) {
         if (name == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("未指定要更新的群组");

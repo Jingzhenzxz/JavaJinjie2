@@ -35,7 +35,7 @@ public class UserController {
         return ResponseEntity.ok(me);
     }
 
-    @PutMapping("/update")
+    @PatchMapping("/update")
     public ResponseEntity<Object> updateMyAccount(@RequestBody UserDTO userDTO, Principal principal) {
         if (principal == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User is not authenticated");
@@ -59,7 +59,7 @@ public class UserController {
         boolean userIsDeleted = userService.deleteById(userId);
 
         if (userIsDeleted) {
-            return ResponseEntity.ok("Delete user successfully");
+            return ResponseEntity.ok("Delete user successful");
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Delete user failed");
         }

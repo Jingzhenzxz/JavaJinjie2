@@ -2,7 +2,7 @@ package com.wuan.attendance.service.impl;
 
 import com.wuan.attendance.dto.GroupDTO;
 import com.wuan.attendance.dto.UserDTO;
-import com.wuan.attendance.exception.GroupNotFoundException;
+import com.wuan.attendance.exception.GroupException;
 import com.wuan.attendance.mapper.GroupMapper;
 import com.wuan.attendance.model.Group;
 import com.wuan.attendance.service.GroupService;
@@ -33,7 +33,7 @@ public class GroupServiceImpl implements GroupService {
     public GroupDTO findById(Integer id) {
         Group group = groupMapper.findById(id);
         if (group == null) {
-            throw new GroupNotFoundException("Group not found with id: " + id);
+            throw new GroupException("Group not found with id: " + id);
         }
 
         return convertToDTO(group);
@@ -43,7 +43,7 @@ public class GroupServiceImpl implements GroupService {
     public GroupDTO findByName(String name) {
         Group group = groupMapper.findByName(name);
         if (group == null) {
-            throw new GroupNotFoundException("Group not found with name: " + name);
+            throw new GroupException("Group not found with name: " + name);
         }
 
         return convertToDTO(group);

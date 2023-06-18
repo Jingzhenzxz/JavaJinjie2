@@ -1,7 +1,6 @@
 package com.wuan.attendance.config;
 
 import com.wuan.attendance.utils.JwtUtil;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Collections;
 
-@Slf4j
 @Component
 public class JwtFilter extends GenericFilterBean {
     private static final String AUTH_TOKEN_KEY = "Authorization";
